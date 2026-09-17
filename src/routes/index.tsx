@@ -51,7 +51,7 @@ function Landing() {
         </h1>
         <p className="mt-4 text-base text-muted-foreground sm:text-lg">Privacy is a human right.</p>
         <p className="mx-auto mt-8 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-          Encrypt any message in your browser. Paste the ciphertext into Discord, SMS, email — anything. Only the friend
+          Encrypt any message in your browser. Paste the ciphertext into Discord, SMS, email anything. Only the friend
           you chose can decrypt it. We never see the plaintext or your keys.
         </p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
