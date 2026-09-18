@@ -130,6 +130,7 @@ export async function encryptMessage(plaintext: string, recipientPublicKeyB64: s
   blob: string;
   wrappedKey: string;
   messageId: string;
+  rawKey: string;
 }> {
   const aesKey = await crypto.subtle.generateKey(AES_ALGO, true, ["encrypt", "decrypt"]);
   const iv = rand(12);
