@@ -306,7 +306,9 @@ function DecryptPanel({ friends }: { friends: Friend[] }) {
       )}
       {output && (
         <div className="rounded-md border border-border bg-card p-4">
-          <div className="mb-2 text-xs text-muted-foreground">{t("app_plaintext")}</div>
+          <div className="mb-2 text-xs text-muted-foreground">
+            {fromArchive ? t("app_from_archive") : t("app_plaintext")}
+          </div>
           <div className="whitespace-pre-wrap text-sm">{output}</div>
         </div>
       )}
