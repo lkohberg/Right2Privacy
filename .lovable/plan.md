@@ -1,44 +1,45 @@
-## Goal
+# Nachrichten-Archiv: Chiffretexte dauerhaft wieder öffnen
 
-Require users to verify their email before they can use Right2Privacy, and enable password-based account recovery via email.
+Heute wird der Schlüssel zu einer Nachricht nach dem ersten Entschlüsseln gelöscht. Wer denselben Chiffretext später noch einmal einfügt, bekommt ihn nicht mehr auf. Das ändert sich: Der Schlüssel wird beim ersten Öffnen für dich selbst neu verpackt und aufbewahrt.
 
-## Behavior
+## Was sich für dich ändert
 
-**Signup**
-- After submitting email + password, Supabase sends a verification link to the user's inbox.
-- The signup screen shows a "Check your email to verify" state instead of signing the user in.
-- No profile / keypair is created yet — creation happens on the user's first successful sign-in after verification (this avoids orphaned rows for abandoned signups and keeps handle selection tied to a real user).
-- If they try to sign in before verifying, they get a clear "Please verify your email" message with a "Resend verification email" button.
+- Einen bereits geöffneten `R2P:…`-Block erneut einfügen: er öffnet sich sofort, ohne dass der Absender etwas neu schicken muss.
+- Das gilt auch auf einem anderen Gerät, solange du dort mit deinem Passwort deine Schlüssel entsperrt hast.
+- Auch eigene gesendete Nachrichten kannst du später wieder öffnen, weil beim Senden zusätzlich eine für dich selbst verpackte Kopie des Schlüssels abgelegt wird.
+- Kein Nachrichtentext wird gespeichert, nur der verpackte Schlüssel. Der Chiffretext muss weiterhin eingefügt werden.
+- Der Server kann damit nichts anfangen: die aufbewahrten Schlüssel sind mit deinem öffentlichen Schlüssel verpackt und nur in deinem Browser zu öffnen.
 
-**Sign in**
-- Standard email + password.
-- On first sign-in after verification, if no profile exists, the existing keypair-generation + handle-picking flow runs (same code as today's signup path, just moved).
+Eine Einschränkung bleibt bestehen: Wenn du deine Schlüssel neu erzeugst (etwa nach einem Passwort-Reset ohne Backup), ist auch das Archiv nicht mehr lesbar. Das ist bewusst so.
 
-**Password reset ("Forgot password?")**
-- Link on the sign-in screen → enter email → Supabase sends a reset link.
-- New public route `/reset-password` where the user sets a new password.
-- Clear warning on that screen: resetting the password will **not** recover past encrypted conversations, because the private key is protected by the old password. After reset, the user will get a fresh keypair and needs to re-add friends. (This matches the "Auth-only recovery" choice.)
-- Implementation: on next sign-in after reset, detect that the stored `encrypted_private_key` can no longer be decrypted (wrong password) and offer a "Regenerate keys" action that overwrites `public_key` / `encrypted_private_key` / `pk_iv` / `pk_salt` on the profile and clears pending keys.
+## Umsetzung
 
-**Verification emails**
-- Use Lovable's built-in auth emails (default templates). No custom email domain setup required.
-- Raise the auth email rate limit modestly so bursts of signups/resets don't 429.
+### Datenbank
 
-## Files to change
+Neue Tabelle `public.message_keys`:
 
-- `src/routes/auth.tsx` — split into three modes: Sign In, Sign Up, Forgot Password. Handle "email not confirmed" error. Move keypair generation + handle selection out of signup and into a "first sign-in, no profile yet" branch. Add "Resend verification".
-- `src/routes/reset-password.tsx` (new, public) — reads Supabase recovery session from URL, calls `supabase.auth.updateUser({ password })`, then redirects to sign-in with a notice.
-- `src/lib/crypto.ts` / profile update path — add a "regenerate keys" helper used when the old password can no longer unlock the stored key.
-- `src/i18n/translations.ts` — add strings for verify-email screen, forgot password, reset password, key-loss warning.
+- `id`, `owner_id` (auth.users), `message_id` (text), `counterpart_id` (auth.users, der andere Teilnehmer), `direction` (`sent` | `received`), `wrapped_key` (text, RSA-OAEP an `owner_id`s Public Key), `created_at`
+- Unique-Index auf `(owner_id, message_id)`
+- GRANT `SELECT, INSERT, DELETE` an `authenticated`, `ALL` an `service_role`
+- RLS an; Policies: select/insert/delete nur `auth.uid() = owner_id`, kein UPDATE
+- Index auf `(owner_id, message_id)`
 
-## Backend
+`pending_keys` bleibt unverändert als Übergabekanal.
 
-- Migration: none required for schema (profile row is created lazily on first sign-in, which the current insert policy already allows).
-- Auth config: `disable_signup: false`, `auto_confirm_email: false`, `external_anonymous_users_enabled: false`, `password_hibp_enabled: true`, raise `rate_limit_email_sent` to 100/hour.
-- `supabase.auth.signUp` uses `emailRedirectTo: window.location.origin`.
-- `supabase.auth.resetPasswordForEmail` uses `redirectTo: ${window.location.origin}/reset-password`.
+### Server-Funktionen (`src/lib/keys.functions.ts`)
 
-## Out of scope
+- `archiveMessageKey` — schreibt eine Zeile in `message_keys` für den Aufrufer (`owner_id = userId`), `onConflict` ignorieren.
+- `fetchArchivedKey` — liest `wrapped_key` zu `(userId, message_id)`; löscht nichts.
+- `fetchWrappedKey` bleibt wie bisher (inkl. Löschen der `pending_keys`-Zeile).
 
-- Custom-branded auth email templates (would need an email domain). Default Lovable auth emails are fine for now; we can brand them later if you want.
-- Recovering old ciphertexts after a password reset — impossible by design without weakening security.
+### Client (`src/routes/_authenticated/app.tsx`, `src/lib/crypto.ts`)
+
+Die `messageId` steckt bereits im `R2P:`-Block (`parsed.mid`), es braucht also keine neue ID.
+
+- Verschlüsseln: nach `postWrappedKey` zusätzlich den AES-Schlüssel mit dem **eigenen** Public Key verpacken und via `archiveMessageKey` mit `direction: "sent"` ablegen.
+- Entschlüsseln: zuerst `fetchArchivedKey` versuchen. Treffer → direkt entpacken und Text anzeigen. Kein Treffer → wie bisher `fetchWrappedKey`, nach erfolgreichem Entschlüsseln den AES-Schlüssel mit dem eigenen Public Key neu verpacken und via `archiveMessageKey` (`direction: "received"`) ablegen.
+- Dafür eine kleine Hilfsfunktion in `crypto.ts`, die einen bereits entpackten AES-Schlüssel erneut RSA-verpackt (der Schlüssel muss dazu als `extractable` importiert werden).
+
+### Texte
+
+Neue i18n-Schlüssel für Statusmeldungen („Aus deinem Archiv geöffnet") in allen 24 Sprachen ergänzen, englischer Fallback bleibt.
