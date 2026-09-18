@@ -38,6 +38,36 @@ export type Database = {
         }
         Relationships: []
       }
+      message_keys: {
+        Row: {
+          counterpart_id: string
+          created_at: string
+          direction: string
+          id: string
+          message_id: string
+          owner_id: string
+          wrapped_key: string
+        }
+        Insert: {
+          counterpart_id: string
+          created_at?: string
+          direction: string
+          id?: string
+          message_id: string
+          owner_id: string
+          wrapped_key: string
+        }
+        Update: {
+          counterpart_id?: string
+          created_at?: string
+          direction?: string
+          id?: string
+          message_id?: string
+          owner_id?: string
+          wrapped_key?: string
+        }
+        Relationships: []
+      }
       pending_keys: {
         Row: {
           created_at: string
