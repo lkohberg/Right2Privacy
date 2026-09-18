@@ -4,9 +4,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import "@/i18n";
-import { listFriends } from "@/lib/friends.functions";
-import { postWrappedKey, fetchWrappedKey } from "@/lib/keys.functions";
-import { encryptMessage, decryptMessage, parseBlob } from "@/lib/crypto";
+import { listFriends, getMyProfile } from "@/lib/friends.functions";
+import { postWrappedKey, fetchWrappedKey, archiveMessageKey, fetchArchivedKey } from "@/lib/keys.functions";
+import { encryptMessage, parseBlob, unwrapRawKey, wrapRawKeyFor, decryptWithRawKey } from "@/lib/crypto";
 import { loadPrivateKey } from "@/lib/keystore";
 import { supabase } from "@/integrations/supabase/client";
 import { Copy, Check, Lock, Unlock } from "lucide-react";
@@ -83,6 +83,8 @@ function EncryptPanel({ friends }: { friends: Friend[] }) {
   const [output, setOutput] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const postKey = useServerFn(postWrappedKey);
+  const archiveKey = useServerFn(archiveMessageKey);
+  const myProfileFn = useServerFn(getMyProfile);
 
   useEffect(() => {
     if (!recipientId && friends[0]) setRecipientId(friends[0].other.id);
@@ -98,7 +100,7 @@ function EncryptPanel({ friends }: { friends: Friend[] }) {
       if (!recipient.other.public_key) throw new Error(t("app_err_missing_key"));
       if (!text.trim()) throw new Error(t("app_err_type"));
 
-      const { blob, wrappedKey, messageId } = await encryptMessage(
+      const { blob, wrappedKey, messageId, rawKey } = await encryptMessage(
         text,
         recipient.other.public_key,
       );
@@ -109,6 +111,21 @@ function EncryptPanel({ friends }: { friends: Friend[] }) {
           wrapped_key: wrappedKey,
         },
       });
+      try {
+        const me = await myProfileFn();
+        if (me?.public_key) {
+          await archiveKey({
+            data: {
+              message_id: messageId,
+              counterpart_id: recipient.other.id,
+              direction: "sent",
+              wrapped_key: await wrapRawKeyFor(rawKey, me.public_key),
+            },
+          });
+        }
+      } catch {
+        // archiving is best-effort; the message itself is already encrypted
+      }
       setOutput(blob);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -190,7 +207,11 @@ function DecryptPanel({ friends }: { friends: Friend[] }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [output, setOutput] = useState<string | null>(null);
+  const [fromArchive, setFromArchive] = useState(false);
   const fetchKey = useServerFn(fetchWrappedKey);
+  const fetchArchived = useServerFn(fetchArchivedKey);
+  const archiveKey = useServerFn(archiveMessageKey);
+  const myProfileFn = useServerFn(getMyProfile);
 
   useEffect(() => {
     if (!senderId && friends[0]) setSenderId(friends[0].other.id);
@@ -199,19 +220,46 @@ function DecryptPanel({ friends }: { friends: Friend[] }) {
   async function onDecrypt() {
     setError(null);
     setOutput(null);
+    setFromArchive(false);
     setBusy(true);
     try {
       const parsed = parseBlob(blob);
-      const key = await fetchKey({
-        data: { message_id: parsed.mid, sender_id: senderId },
-      });
-      if (!key) throw new Error(t("app_err_no_key"));
       const { data: udata } = await supabase.auth.getUser();
       if (!udata.user) throw new Error(t("app_err_signed_out"));
       const priv = await loadPrivateKey(udata.user.id);
       if (!priv) throw new Error(t("app_err_priv_missing"));
-      const pt = await decryptMessage(parsed, key.wrapped_key, priv);
-      setOutput(pt);
+
+      const archived = await fetchArchived({ data: { message_id: parsed.mid } });
+      if (archived) {
+        const raw = await unwrapRawKey(archived.wrapped_key, priv);
+        setOutput(await decryptWithRawKey(parsed, raw));
+        setFromArchive(true);
+        return;
+      }
+
+      const key = await fetchKey({
+        data: { message_id: parsed.mid, sender_id: senderId },
+      });
+      if (!key) throw new Error(t("app_err_no_key"));
+      const raw = await unwrapRawKey(key.wrapped_key, priv);
+      setOutput(await decryptWithRawKey(parsed, raw));
+      setFromArchive(false);
+
+      try {
+        const me = await myProfileFn();
+        if (me?.public_key) {
+          await archiveKey({
+            data: {
+              message_id: parsed.mid,
+              counterpart_id: senderId,
+              direction: "received",
+              wrapped_key: await wrapRawKeyFor(raw, me.public_key),
+            },
+          });
+        }
+      } catch {
+        // archiving is best-effort
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
