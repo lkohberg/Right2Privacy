@@ -158,6 +158,7 @@ export async function encryptMessage(plaintext: string, recipientPublicKeyB64: s
     blob: `R2P:${encoded}`,
     wrappedKey: bufToB64(wrapped),
     messageId,
+    rawKey: bufToB64(rawAes),
   };
 }
 
