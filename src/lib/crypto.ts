@@ -130,6 +130,7 @@ export async function encryptMessage(plaintext: string, recipientPublicKeyB64: s
   blob: string;
   wrappedKey: string;
   messageId: string;
+  rawKey: string;
 }> {
   const aesKey = await crypto.subtle.generateKey(AES_ALGO, true, ["encrypt", "decrypt"]);
   const iv = rand(12);
@@ -157,6 +158,7 @@ export async function encryptMessage(plaintext: string, recipientPublicKeyB64: s
     blob: `R2P:${encoded}`,
     wrappedKey: bufToB64(wrapped),
     messageId,
+    rawKey: bufToB64(rawAes),
   };
 }
 
@@ -183,6 +185,54 @@ export async function decryptMessage(
   const aesKey = await crypto.subtle.importKey("raw", rawAes, AES_ALGO, false, [
     "decrypt",
   ]);
+  const pt = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv: b64ToBuf(blob.iv) },
+    aesKey,
+    b64ToBuf(blob.ct),
+  );
+  return new TextDecoder().decode(pt);
+}
+// ---------- archive helpers (re-wrap a message key for yourself) ----------
+
+/** Unwrap an RSA-wrapped AES key and return it as raw base64. */
+export async function unwrapRawKey(
+  wrappedKeyB64: string,
+  privateKey: CryptoKey,
+): Promise<string> {
+  const rawAes = await crypto.subtle.decrypt(
+    { name: "RSA-OAEP" },
+    privateKey,
+    b64ToBuf(wrappedKeyB64),
+  );
+  return bufToB64(rawAes);
+}
+
+/** Wrap a raw AES key (base64) with an RSA public key (base64 SPKI). */
+export async function wrapRawKeyFor(
+  rawKeyB64: string,
+  publicKeyB64: string,
+): Promise<string> {
+  const pub = await importPublicKey(publicKeyB64);
+  const wrapped = await crypto.subtle.encrypt(
+    { name: "RSA-OAEP" },
+    pub,
+    b64ToBuf(rawKeyB64),
+  );
+  return bufToB64(wrapped);
+}
+
+/** Decrypt a blob with an already-unwrapped raw AES key (base64). */
+export async function decryptWithRawKey(
+  blob: CipherBlob,
+  rawKeyB64: string,
+): Promise<string> {
+  const aesKey = await crypto.subtle.importKey(
+    "raw",
+    b64ToBuf(rawKeyB64),
+    AES_ALGO,
+    false,
+    ["decrypt"],
+  );
   const pt = await crypto.subtle.decrypt(
     { name: "AES-GCM", iv: b64ToBuf(blob.iv) },
     aesKey,
