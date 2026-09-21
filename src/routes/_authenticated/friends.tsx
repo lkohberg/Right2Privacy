@@ -121,16 +121,13 @@ function FriendsPage() {
   const addForm = (
     <form onSubmit={onAdd}>
       <div className="flex items-center gap-2">
-        <div className="relative flex min-w-0 flex-1 items-center">
-          <span className="pointer-events-none absolute left-3.5 text-sm text-muted-foreground">
-            @
-          </span>
+        <div className="flex min-w-0 flex-1 items-center">
           <input
             value={handle}
             onChange={(e) => setHandle(e.target.value)}
             placeholder={t("friends_handle_ph")}
             aria-label={t("friends_add")}
-            className="r2p-input h-12 w-full pl-8 font-mono"
+            className="r2p-input h-12 w-full px-4 font-mono"
           />
         </div>
         <Button
