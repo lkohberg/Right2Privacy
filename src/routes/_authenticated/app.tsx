@@ -184,6 +184,25 @@ function Workspace() {
         </div>
       ) : (
         <div className="grid grid-cols-[4.75rem_minmax(0,1fr)] items-start gap-4 sm:grid-cols-[5.25rem_minmax(0,1fr)] lg:gap-6">
+          <div className="col-start-1 min-w-0 overflow-hidden">
+            <div
+              role="tabpanel"
+              aria-hidden={tab !== "encrypt"}
+              hidden={tab !== "encrypt"}
+              className="animate-message-roll-down motion-reduce:animate-none"
+            >
+              <EncryptPanel friends={accepted} selectedFriendId={selectedFriendId} />
+            </div>
+            <div
+              role="tabpanel"
+              aria-hidden={tab !== "decrypt"}
+              hidden={tab !== "decrypt"}
+              className="animate-message-roll-up motion-reduce:animate-none"
+            >
+              <DecryptPanel selectedFriendId={selectedFriendId} onActivityConsumed={activity.refresh} />
+            </div>
+          </div>
+
           <div
             role="tablist"
             aria-label={`${t("app_encrypt")} / ${t("app_decrypt")}`}
@@ -198,7 +217,7 @@ function Workspace() {
                 setTab("decrypt");
               }
             }}
-            className="mode-barrel relative sticky top-0 grid grid-rows-2 overflow-hidden rounded-xl border border-border bg-card p-1 shadow-lg"
+            className="mode-barrel col-start-2 row-start-1 relative sticky top-0 grid grid-rows-2 overflow-hidden rounded-xl border border-border bg-card p-1 shadow-lg"
           >
             <span
               aria-hidden="true"
@@ -228,24 +247,6 @@ function Workspace() {
             </Button>
           </div>
 
-          <div className="min-w-0 overflow-hidden">
-            <div
-              role="tabpanel"
-              aria-hidden={tab !== "encrypt"}
-              hidden={tab !== "encrypt"}
-              className="animate-message-roll-down motion-reduce:animate-none"
-            >
-              <EncryptPanel friends={accepted} selectedFriendId={selectedFriendId} />
-            </div>
-            <div
-              role="tabpanel"
-              aria-hidden={tab !== "decrypt"}
-              hidden={tab !== "decrypt"}
-              className="animate-message-roll-up motion-reduce:animate-none"
-            >
-              <DecryptPanel selectedFriendId={selectedFriendId} onActivityConsumed={activity.refresh} />
-            </div>
-          </div>
         </div>
       )}
 
