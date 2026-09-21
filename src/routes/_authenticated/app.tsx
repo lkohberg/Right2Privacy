@@ -73,15 +73,15 @@ function Workspace() {
   const selectedFriend = accepted.find((friend) => friend.other.id === selectedFriendId);
 
   return (
-    <main className="mx-auto max-w-6xl px-0 py-0 sm:px-6 sm:py-8">
+    <main className="mx-auto max-w-6xl px-0 py-0 lg:px-6 lg:py-8">
       <div className="grid gap-6 lg:grid-cols-[15rem_minmax(0,1fr)]">
         <aside className={`${mobileContactOpen ? "hidden" : "block"} min-w-0 lg:block lg:border-r lg:border-border lg:pr-5`}>
-          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 border-b border-border px-4 pb-4 pt-5 sm:px-0 sm:pt-0 lg:mb-3 lg:border-b-0 lg:pb-0">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 border-b border-border px-4 pb-4 pt-5 lg:mb-3 lg:border-b-0 lg:px-0 lg:pb-0 lg:pt-0">
             <div className="min-w-0">
               <p className="mb-1 text-xs font-medium uppercase text-primary">Right2Privacy</p>
-              <h1 className="truncate text-2xl font-semibold sm:text-xs sm:uppercase sm:text-muted-foreground">{t("nav_messages")}</h1>
+              <h1 className="truncate text-2xl font-semibold lg:text-xs lg:uppercase lg:text-muted-foreground">{t("nav_messages")}</h1>
             </div>
-            <span className="pb-1 text-sm text-muted-foreground sm:text-xs">{accepted.length}</span>
+            <span className="pb-1 text-sm text-muted-foreground lg:text-xs">{accepted.length}</span>
           </div>
           <div className="divide-y divide-border lg:flex lg:flex-col lg:divide-y-0">
             {friendsQ.isLoading && (
@@ -99,14 +99,14 @@ function Workspace() {
                   type="button"
                   variant="ghost"
                   onClick={() => openContact(friend.other.id, count > 0 ? "decrypt" : "encrypt")}
-                  className={`h-[4.75rem] w-full justify-start rounded-none px-4 font-mono sm:h-10 sm:min-w-32 sm:rounded-md sm:px-3 lg:w-full ${selected ? "sm:bg-accent sm:text-accent-foreground" : "text-foreground sm:text-muted-foreground"}`}
+                  className={`h-[4.75rem] w-full justify-start rounded-none px-4 font-mono lg:h-10 lg:min-w-32 lg:w-full lg:rounded-md lg:px-3 ${selected ? "lg:bg-accent lg:text-accent-foreground" : "text-foreground lg:text-muted-foreground"}`}
                 >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold uppercase text-secondary-foreground sm:h-6 sm:w-6 sm:text-[11px]">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold uppercase text-secondary-foreground lg:h-6 lg:w-6 lg:text-[11px]">
                     {friend.other.handle.slice(0, 2)}
                   </span>
                   <span className="min-w-0 flex-1 text-left">
                     <span className="block truncate text-[15px] font-semibold">@{friend.other.handle}</span>
-                    <span className="mt-0.5 block truncate font-sans text-xs font-normal text-muted-foreground sm:hidden">
+                    <span className="mt-0.5 block truncate font-sans text-xs font-normal text-muted-foreground lg:hidden">
                       {count > 0 ? t("activity_key_waiting", { handle: friend.other.handle }) : t("app_encrypt")}
                     </span>
                   </span>
@@ -114,7 +114,7 @@ function Workspace() {
                     {count > 0 && (
                       <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">{count}</span>
                     )}
-                    <ChevronRight className="h-4 w-4 text-muted-foreground sm:hidden" />
+                    <ChevronRight className="h-4 w-4 text-muted-foreground lg:hidden" />
                   </span>
                 </Button>
               );

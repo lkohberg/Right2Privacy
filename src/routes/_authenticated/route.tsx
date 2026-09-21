@@ -75,14 +75,14 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
   const requestCount = friendRequests.length;
 
   return (
-    <div className="min-h-screen bg-background pb-[calc(5.75rem+env(safe-area-inset-bottom))] text-foreground sm:pb-0">
+    <div className="min-h-screen bg-background pb-[calc(5.75rem+env(safe-area-inset-bottom))] text-foreground lg:pb-0">
       <header className="border-b border-border">
-        <div className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:flex sm:justify-between sm:px-6">
+        <div className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 lg:flex lg:justify-between lg:px-6">
           <Link to="/app" className="flex min-w-0 items-center gap-2 text-sm font-mono">
             <Lock className="h-4 w-4 shrink-0 text-primary" />
             <span className="truncate">Right2Privacy</span>
           </Link>
-          <nav className="hidden shrink-0 items-center gap-1 text-sm sm:flex">
+          <nav className="hidden shrink-0 items-center gap-1 text-sm lg:flex">
             <NavLink to="/app" label={t("nav_messages")} badge={activityCount} icon={<Lock className="h-4 w-4" />} />
             <NavLink to="/friends" label={t("nav_friends")} badge={requestCount} icon={<Users className="h-4 w-4" />} />
             <NavLink to="/settings" label={t("nav_settings")} icon={<Settings className="h-4 w-4" />} />
@@ -112,7 +112,7 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
         </div>
       </header>
       <Outlet />
-      <nav className="fixed inset-x-0 bottom-0 z-50 px-3 pb-[calc(0.5rem+env(safe-area-inset-bottom))] sm:hidden" aria-label="Mobile navigation">
+      <nav className="fixed inset-x-0 bottom-0 z-50 px-3 pb-[calc(0.5rem+env(safe-area-inset-bottom))] lg:hidden" aria-label="Mobile navigation">
         <div className="grid h-[4.5rem] grid-cols-3 items-stretch rounded-[1.35rem] border border-border bg-card/95 p-1 shadow-2xl backdrop-blur-xl">
           <MobileNavLink to="/app" label={t("nav_messages")} badge={activityCount} icon={<Lock />} />
           <MobileNavLink to="/friends" label={t("nav_friends")} badge={requestCount} icon={<Users />} />

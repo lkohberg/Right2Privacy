@@ -86,13 +86,13 @@ function FriendsPage() {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-5 py-8 sm:px-6">
-      <h1 className="text-lg font-semibold sm:text-xl">{t("friends_title")}</h1>
+    <main className="mx-auto max-w-2xl px-5 py-8 lg:px-6">
+      <h1 className="text-lg font-semibold lg:text-xl">{t("friends_title")}</h1>
       <p className="mt-1 text-sm text-muted-foreground">
         {t("friends_intro")}
       </p>
 
-      <form onSubmit={onAdd} className="mt-5 flex gap-2 sm:mt-6">
+      <form onSubmit={onAdd} className="mt-5 flex gap-2 lg:mt-6">
         <input
           value={handle}
           onChange={(e) => setHandle(e.target.value)}
@@ -101,10 +101,10 @@ function FriendsPage() {
         />
         <Button
           disabled={busy}
-          className="shrink-0 px-3 sm:px-4"
+          className="shrink-0 px-3 lg:px-4"
           aria-label={t("friends_add")}
         >
-          <UserPlus className="h-4 w-4" /> <span className="hidden sm:inline">{t("friends_add")}</span>
+          <UserPlus className="h-4 w-4" /> <span className="hidden lg:inline">{t("friends_add")}</span>
         </Button>
       </form>
       {msg && <div className="mt-2 text-sm text-muted-foreground">{msg}</div>}
@@ -205,7 +205,7 @@ function Section({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="mt-6 sm:mt-8">
+    <div className="mt-6 lg:mt-8">
       <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
         {title}
       </h2>
@@ -222,7 +222,7 @@ function Section({
 
 function Row({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-between gap-2 px-3 py-2.5 text-sm sm:px-4 sm:py-3">
+    <div className="flex items-center justify-between gap-2 px-3 py-2.5 text-sm lg:px-4 lg:py-3">
       {children}
     </div>
   );
