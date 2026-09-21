@@ -189,7 +189,7 @@ function Workspace() {
               role="tabpanel"
               aria-hidden={tab !== "encrypt"}
               hidden={tab !== "encrypt"}
-              className="animate-message-roll-down motion-reduce:animate-none"
+              className="animate-message-slide-from-left motion-reduce:animate-none lg:animate-message-roll-down"
             >
               <EncryptPanel friends={accepted} selectedFriendId={selectedFriendId} />
             </div>
