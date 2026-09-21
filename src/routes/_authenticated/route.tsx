@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect, Link, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { Bell, BellRing, Lock, Users, Settings, LogOut } from "lucide-react";
+import { Bell, BellRing, Lock, MessageSquare, Users, Settings, LogOut } from "lucide-react";
 import { clearPrivateKey } from "@/lib/keystore";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
@@ -84,7 +84,7 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
             <span className="truncate lg:hidden">Right2Privacy</span>
           </Link>
           <nav className="hidden shrink-0 items-center gap-1 text-sm lg:mt-10 lg:flex lg:flex-1 lg:flex-col lg:gap-3">
-            <NavLink to="/app" label={t("nav_messages")} badge={activityCount} icon={<Lock className="h-4 w-4" />} />
+            <NavLink to="/app" label={t("nav_messages")} badge={activityCount} icon={<MessageSquare className="h-4 w-4" />} />
             <NavLink to="/friends" label={t("nav_friends")} badge={requestCount} icon={<Users className="h-4 w-4" />} />
             <NavLink to="/settings" label={t("nav_settings")} icon={<Settings className="h-4 w-4" />} />
             <div className="mt-auto flex flex-col gap-2">
@@ -118,7 +118,7 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
       </div>
       <nav className="fixed inset-x-0 bottom-0 z-50 px-3 pb-[calc(0.5rem+env(safe-area-inset-bottom))] lg:hidden" aria-label="Mobile navigation">
         <div className="grid h-[4.5rem] grid-cols-3 items-stretch rounded-[1.35rem] border border-border bg-card/95 p-1 shadow-2xl backdrop-blur-xl">
-          <MobileNavLink to="/app" label={t("nav_messages")} badge={activityCount} icon={<Lock />} />
+          <MobileNavLink to="/app" label={t("nav_messages")} badge={activityCount} icon={<MessageSquare />} />
           <MobileNavLink to="/friends" label={t("nav_friends")} badge={requestCount} icon={<Users />} />
           <MobileNavLink to="/settings" label={t("nav_settings")} icon={<Settings />} />
         </div>
