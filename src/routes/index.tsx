@@ -17,6 +17,8 @@ export const Route = createFileRoute("/")({
         content:
           "End-to-end encrypt messages in your browser, then send the ciphertext through any messenger. Privacy is a human right.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Landing,

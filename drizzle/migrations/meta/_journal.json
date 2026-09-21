@@ -8,6 +8,20 @@
       "when": 1789719135061,
       "tag": "0000_create_message_keys",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790008076261,
+      "tag": "0001_add_pending_key_reminder_dismissal",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790008230551,
+      "tag": "0002_restrict_pending_key_dismissal_update",
+      "breakpoints": true
     }
   ]
 }

@@ -10,6 +10,10 @@ export const Route = createFileRoute("/reset-password")({
     meta: [
       { title: "Reset password — Right2Privacy" },
       { name: "description", content: "Set a new password for your Right2Privacy account." },
+      { property: "og:title", content: "Reset password — Right2Privacy" },
+      { property: "og:description", content: "Set a new password for your Right2Privacy account." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ResetPasswordPage,

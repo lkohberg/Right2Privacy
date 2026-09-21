@@ -12,12 +12,18 @@ import {
   unfriend,
 } from "@/lib/friends.functions";
 import { Check, X, UserPlus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useActivity } from "@/components/activity-provider";
 
 export const Route = createFileRoute("/_authenticated/friends")({
   head: () => ({
     meta: [
       { title: "Friends — Right2Privacy" },
       { name: "description", content: "Manage your Right2Privacy friends." },
+      { property: "og:title", content: "Friends — Right2Privacy" },
+      { property: "og:description", content: "Manage your Right2Privacy friends." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: FriendsPage,
@@ -31,6 +37,7 @@ function FriendsPage() {
   const respondFn = useServerFn(respondFriendRequest);
   const unfriendFn = useServerFn(unfriend);
   const qc = useQueryClient();
+  const activity = useActivity();
 
   const q = useQuery({ queryKey: ["friends"], queryFn: () => listFn() });
 
@@ -71,6 +78,13 @@ function FriendsPage() {
   );
   const accepted = rows.filter((r) => r.status === "accepted");
 
+  async function refreshLists() {
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: ["friends"] }),
+      activity.refresh(),
+    ]);
+  }
+
   return (
     <main className="mx-auto max-w-2xl px-5 py-8 sm:px-6">
       <h1 className="text-lg font-semibold sm:text-xl">{t("friends_title")}</h1>
@@ -85,39 +99,42 @@ function FriendsPage() {
           placeholder={t("friends_handle_ph")}
           className="r2p-input min-w-0 flex-1"
         />
-        <button
+        <Button
           disabled={busy}
-          className="flex shrink-0 items-center gap-1 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50 sm:px-4"
+          className="shrink-0 px-3 sm:px-4"
           aria-label={t("friends_add")}
         >
           <UserPlus className="h-4 w-4" /> <span className="hidden sm:inline">{t("friends_add")}</span>
-        </button>
+        </Button>
       </form>
       {msg && <div className="mt-2 text-sm text-muted-foreground">{msg}</div>}
 
       <Section title={t("friends_incoming")} hint={incoming.length === 0 ? t("friends_none") : undefined}>
         {incoming.map((r) => (
           <Row key={r.friendship_id}>
-            <span>@{r.other.handle}</span>
+            <div className="min-w-0">
+              <div className="truncate font-mono font-medium">@{r.other.handle}</div>
+              <div className="mt-0.5 text-xs text-muted-foreground">{t("friends_request_from", { handle: r.other.handle })}</div>
+            </div>
             <div className="flex gap-1">
               <IconBtn
-                title={t("app_encrypt_btn").length > 0 ? t("friends_add") : "Accept"}
+                title={t("friends_accept")}
                 onClick={async () => {
                   await respondFn({
                     data: { friendship_id: r.friendship_id, accept: true },
                   });
-                  qc.invalidateQueries({ queryKey: ["friends"] });
+                  await refreshLists();
                 }}
               >
                 <Check className="h-4 w-4" />
               </IconBtn>
               <IconBtn
-                title={t("friends_none")}
+                title={t("friends_decline")}
                 onClick={async () => {
                   await respondFn({
                     data: { friendship_id: r.friendship_id, accept: false },
                   });
-                  qc.invalidateQueries({ queryKey: ["friends"] });
+                  await refreshLists();
                 }}
               >
                 <X className="h-4 w-4" />
@@ -221,12 +238,16 @@ function IconBtn({
   children: React.ReactNode;
 }) {
   return (
-    <button
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
       onClick={onClick}
       title={title}
-      className="rounded-md border border-border p-1.5 hover:bg-accent"
+      aria-label={title}
+      className="h-8 w-8 border border-border"
     >
       {children}
-    </button>
+    </Button>
   );
 }

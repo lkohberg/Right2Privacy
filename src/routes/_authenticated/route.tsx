@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect, Link, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { Lock, Users, Settings, LogOut } from "lucide-react";
+import { Bell, BellRing, Lock, Users, Settings, LogOut } from "lucide-react";
 import { clearPrivateKey } from "@/lib/keystore";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { getMyProfile } from "@/lib/friends.functions";
 import { SUPPORTED_CODES } from "@/i18n/languages";
+import { ActivityProvider, useActivity } from "@/components/activity-provider";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -60,6 +62,19 @@ function AuthedLayout() {
   }
 
   return (
+    <ActivityProvider>
+      <AuthenticatedShell onSignOut={signOut} />
+    </ActivityProvider>
+  );
+}
+
+function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
+  const { t } = useTranslation();
+  const { messages, friendRequests, browserAlertsEnabled, enableBrowserAlerts } = useActivity();
+  const activityCount = messages.length;
+  const requestCount = friendRequests.length;
+
+  return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-4 py-3 sm:px-6">
@@ -68,17 +83,31 @@ function AuthedLayout() {
             <span className="truncate">Right2Privacy</span>
           </Link>
           <nav className="flex shrink-0 items-center gap-0.5 text-sm sm:gap-1">
-            <NavLink to="/app" label={t("nav_messages")} icon={<Lock className="h-4 w-4" />} />
-            <NavLink to="/friends" label={t("nav_friends")} icon={<Users className="h-4 w-4" />} />
+            <NavLink to="/app" label={t("nav_messages")} badge={activityCount} icon={<Lock className="h-4 w-4" />} />
+            <NavLink to="/friends" label={t("nav_friends")} badge={requestCount} icon={<Users className="h-4 w-4" />} />
             <NavLink to="/settings" label={t("nav_settings")} icon={<Settings className="h-4 w-4" />} />
-            <button
-              onClick={signOut}
-              className="flex items-center gap-1 rounded-md px-2 py-1.5 text-muted-foreground hover:bg-accent sm:px-3"
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={enableBrowserAlerts}
+              title={browserAlertsEnabled ? t("notifications_enabled") : t("notifications_enable")}
+              aria-label={browserAlertsEnabled ? t("notifications_enabled") : t("notifications_enable")}
+              className="h-8 w-8 text-muted-foreground"
+            >
+              {browserAlertsEnabled ? <BellRing /> : <Bell />}
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={onSignOut}
+              className="h-8 w-8 text-muted-foreground"
               title={t("nav_signout")}
               aria-label={t("nav_signout")}
             >
               <LogOut className="h-4 w-4" />
-            </button>
+            </Button>
           </nav>
         </div>
       </header>
@@ -91,10 +120,12 @@ function NavLink({
   to,
   label,
   icon,
+  badge = 0,
 }: {
   to: "/app" | "/friends" | "/settings";
   label: string;
   icon?: React.ReactNode;
+  badge?: number;
 }) {
   return (
     <Link
@@ -106,6 +137,11 @@ function NavLink({
     >
       {icon}
       <span className="hidden sm:inline">{label}</span>
+      {badge > 0 && (
+        <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold leading-none text-primary-foreground">
+          {badge > 99 ? "99+" : badge}
+        </span>
+      )}
     </Link>
   );
 }

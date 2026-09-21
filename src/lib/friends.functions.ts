@@ -219,7 +219,11 @@ export const listFriends = createServerFn({ method: "GET" })
     );
     let profilesById = new Map<string, { id: string; handle: string; public_key: string }>();
     if (otherIds.length) {
-      const { data: profs } = await supabase
+      // The signed-in user is allowed to know the handle behind any request
+      // involving them, even before accepting it. Keep this narrow projection
+      // server-side rather than widening the profiles read policy.
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { data: profs } = await supabaseAdmin
         .from("profiles")
         .select("id, handle, public_key")
         .in("id", otherIds);
