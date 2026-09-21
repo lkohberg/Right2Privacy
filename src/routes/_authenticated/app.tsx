@@ -16,6 +16,10 @@ import { dismissMessageReminder } from "@/lib/activity.functions";
 import { NewsTicker } from "@/components/news-ticker";
 
 export const Route = createFileRoute("/_authenticated/app")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    contact: typeof search.contact === "string" ? search.contact : undefined,
+    mode: search.mode === "decrypt" ? ("decrypt" as const) : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Contacts — Right2Privacy" },
@@ -28,6 +32,7 @@ export const Route = createFileRoute("/_authenticated/app")({
   }),
   component: Workspace,
 });
+
 
 type Friend = {
   friendship_id: string;
