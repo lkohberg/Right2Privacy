@@ -34,10 +34,10 @@ function buildEntries(news: NewsItem[]): Entry[] {
 function Item({ entry }: { entry: Entry }) {
   const body = (
     <>
-      <span className="text-[10px] font-semibold uppercase tracking-wide text-primary">
+      <span className="text-xs font-semibold uppercase tracking-wide text-primary">
         {entry.label}
       </span>
-      <span className="text-xs text-muted-foreground">{entry.text}</span>
+      <span className="text-sm text-muted-foreground">{entry.text}</span>
       <span aria-hidden="true" className="text-border">
         /
       </span>
@@ -70,10 +70,10 @@ export function NewsTicker() {
   if (entries.length === 0) return null;
 
   return (
-    <div className="ticker-mask flex h-9 shrink-0 items-center overflow-hidden border-t border-border bg-background/60">
+    <div className="ticker-mask flex h-12 shrink-0 items-center overflow-hidden border-t border-border bg-background/60">
       <div className="flex h-full shrink-0 items-center gap-1.5 border-r border-border px-3">
-        <Radio className="h-3.5 w-3.5 text-primary" />
-        <span className="text-[10px] font-semibold uppercase tracking-wide text-primary">
+        <Radio className="h-4 w-4 text-primary" />
+        <span className="text-xs font-semibold uppercase tracking-wide text-primary">
           Privacy feed
         </span>
       </div>
