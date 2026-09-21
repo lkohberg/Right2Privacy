@@ -176,6 +176,23 @@
   transform-origin: bottom center;
 }
 
+@keyframes chat-fade {
+  from {
+    opacity: 0;
+    transform: translateY(0.35rem);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@utility animate-chat-fade {
+  animation: chat-fade 280ms ease-out;
+}
+
 @keyframes message-slide-from-left {
   from {
     opacity: 0;
