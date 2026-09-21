@@ -1,13 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMyProfile, updateLanguage } from "@/lib/friends.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { loadPrivateKey } from "@/lib/keystore";
+import { clearPrivateKey, loadPrivateKey } from "@/lib/keystore";
 import { useTranslation } from "react-i18next";
 import "@/i18n";
 import { LANGUAGES, SUPPORTED_CODES } from "@/i18n/languages";
+import { Bell, BellRing, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useActivity } from "@/components/activity-provider";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
@@ -25,6 +28,8 @@ export const Route = createFileRoute("/_authenticated/settings")({
 
 function SettingsPage() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const { browserAlertsEnabled, enableBrowserAlerts } = useActivity();
   const getProfile = useServerFn(getMyProfile);
   const setLangFn = useServerFn(updateLanguage);
   const qc = useQueryClient();
@@ -71,6 +76,13 @@ function SettingsPage() {
   const currentLng =
     selectedLng ?? q.data?.language ?? i18n.language ?? "en";
 
+  async function signOut() {
+    const { data } = await supabase.auth.getUser();
+    if (data.user?.id) await clearPrivateKey(data.user.id).catch(() => {});
+    await supabase.auth.signOut();
+    navigate({ to: "/auth" });
+  }
+
   return (
     <main className="mx-auto max-w-2xl px-5 py-8 sm:px-6">
       <h1 className="text-lg font-semibold sm:text-xl">{t("settings_title")}</h1>
@@ -80,6 +92,16 @@ function SettingsPage() {
           <Row label={t("settings_handle")}>
             {q.data ? <span className="font-mono">@{q.data.handle}</span> : "—"}
           </Row>
+          <div className="grid gap-2 border-t border-border p-3 sm:hidden">
+            <Button type="button" variant="ghost" onClick={enableBrowserAlerts} className="h-11 justify-start gap-3 px-3">
+              {browserAlertsEnabled ? <BellRing className="h-5 w-5 text-primary" /> : <Bell className="h-5 w-5" />}
+              {browserAlertsEnabled ? t("notifications_enabled") : t("notifications_enable")}
+            </Button>
+            <Button type="button" variant="ghost" onClick={signOut} className="h-11 justify-start gap-3 px-3 text-destructive hover:text-destructive">
+              <LogOut className="h-5 w-5" />
+              {t("nav_signout")}
+            </Button>
+          </div>
         </Card>
 
         <Card title={t("settings_language")}>
