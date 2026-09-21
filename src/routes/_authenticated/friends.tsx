@@ -88,6 +88,16 @@ function FriendsPage() {
       const found = await searchFn({ data: { handle: clean } });
       if (!found) throw new Error(t("friends_err_no_user"));
       const res = await sendFn({ data: { addressee_id: found.id } });
+      if (!res.ok) {
+        throw new Error(
+          t(
+            res.reason === "already_friends"
+              ? "friends_err_already_friends"
+              : "friends_err_already_sent",
+            { handle: found.handle },
+          ),
+        );
+      }
       setMsg(
         res.autoAccepted
           ? t("friends_now_friends", { handle: found.handle })
