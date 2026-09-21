@@ -84,15 +84,15 @@ function SettingsPage() {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-5 py-8 sm:px-6">
-      <h1 className="text-lg font-semibold sm:text-xl">{t("settings_title")}</h1>
-      <div className="mt-5 space-y-3 sm:mt-6 sm:space-y-4">
+    <main className="mx-auto max-w-2xl px-5 py-8 lg:px-6">
+      <h1 className="text-lg font-semibold lg:text-xl">{t("settings_title")}</h1>
+      <div className="mt-5 space-y-3 lg:mt-6 lg:space-y-4">
         <Card title={t("settings_account")}>
           <Row label={t("settings_email")}>{email ?? "—"}</Row>
           <Row label={t("settings_handle")}>
             {q.data ? <span className="font-mono">@{q.data.handle}</span> : "—"}
           </Row>
-          <div className="grid gap-2 border-t border-border p-3 sm:hidden">
+          <div className="grid gap-2 border-t border-border p-3 lg:hidden">
             <Button type="button" variant="ghost" onClick={enableBrowserAlerts} className="h-11 justify-start gap-3 px-3">
               {browserAlertsEnabled ? <BellRing className="h-5 w-5 text-primary" /> : <Bell className="h-5 w-5" />}
               {browserAlertsEnabled ? t("notifications_enabled") : t("notifications_enable")}
@@ -176,7 +176,7 @@ function Card({
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-between gap-3 px-3 py-2.5 text-sm sm:px-4 sm:py-3">
+    <div className="flex items-center justify-between gap-3 px-3 py-2.5 text-sm lg:px-4 lg:py-3">
       <span className="shrink-0 text-muted-foreground">{label}</span>
       <span className="min-w-0 truncate text-right">{children}</span>
     </div>
