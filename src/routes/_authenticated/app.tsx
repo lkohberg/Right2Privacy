@@ -189,7 +189,7 @@ function Workspace() {
               role="tabpanel"
               aria-hidden={tab !== "encrypt"}
               hidden={tab !== "encrypt"}
-              className="animate-message-roll-down motion-reduce:animate-none"
+              className="animate-message-slide-from-left motion-reduce:animate-none lg:animate-message-roll-down"
             >
               <EncryptPanel friends={accepted} selectedFriendId={selectedFriendId} />
             </div>
@@ -197,7 +197,7 @@ function Workspace() {
               role="tabpanel"
               aria-hidden={tab !== "decrypt"}
               hidden={tab !== "decrypt"}
-              className="animate-message-roll-up motion-reduce:animate-none"
+              className="animate-message-slide-from-right motion-reduce:animate-none lg:animate-message-roll-up"
             >
               <DecryptPanel selectedFriendId={selectedFriendId} onActivityConsumed={activity.refresh} />
             </div>
@@ -232,7 +232,7 @@ function Workspace() {
               aria-selected={tab === "encrypt"}
               variant="ghost"
               onClick={() => setTab("encrypt")}
-              className={`mode-barrel-option relative z-10 h-16 min-w-0 flex-row gap-2 rounded-lg px-2 text-xs transition-all duration-300 hover:bg-transparent sm:text-sm lg:h-24 lg:flex-col lg:gap-1 lg:px-0.5 lg:text-[11px] ${tab === "encrypt" ? "mode-barrel-option-active text-primary" : "mode-barrel-option-away text-muted-foreground"}`}
+              className={`mode-barrel-option relative z-10 h-11 min-w-0 flex-row gap-2 rounded-lg px-2 text-xs transition-all duration-300 hover:bg-transparent sm:text-sm lg:h-24 lg:flex-col lg:gap-1 lg:px-0.5 lg:text-[11px] ${tab === "encrypt" ? "mode-barrel-option-active text-primary" : "mode-barrel-option-away text-muted-foreground"}`}
             >
               <Lock className="h-4 w-4 shrink-0" />
               <span className="max-w-full truncate">{t("app_encrypt")}</span>
@@ -243,7 +243,7 @@ function Workspace() {
               aria-selected={tab === "decrypt"}
               variant="ghost"
               onClick={() => setTab("decrypt")}
-              className={`mode-barrel-option relative z-10 h-16 min-w-0 flex-row gap-2 rounded-lg px-2 text-xs transition-all duration-300 hover:bg-transparent sm:text-sm lg:h-24 lg:flex-col lg:gap-1 lg:px-0.5 lg:text-[11px] ${tab === "decrypt" ? "mode-barrel-option-active text-primary" : "mode-barrel-option-away text-muted-foreground"}`}
+              className={`mode-barrel-option relative z-10 h-11 min-w-0 flex-row gap-2 rounded-lg px-2 text-xs transition-all duration-300 hover:bg-transparent sm:text-sm lg:h-24 lg:flex-col lg:gap-1 lg:px-0.5 lg:text-[11px] ${tab === "decrypt" ? "mode-barrel-option-active text-primary" : "mode-barrel-option-away text-muted-foreground"}`}
             >
               <Unlock className="h-4 w-4 shrink-0" />
               <span className="max-w-full truncate">{t("app_decrypt")}</span>
@@ -338,8 +338,9 @@ function EncryptPanel({ friends, selectedFriendId }: { friends: Friend[]; select
       <Button
         onClick={onEncrypt}
         disabled={busy}
-        className="lg:h-11 lg:px-6"
+        className="h-12 w-full gap-2 rounded-full text-sm font-semibold shadow-lg shadow-primary/20 transition-transform active:scale-[0.98] lg:h-11 lg:w-auto lg:px-7"
       >
+        <Lock className="h-4 w-4 shrink-0" />
         {busy ? t("app_encrypting") : t("app_encrypt_btn")}
       </Button>
 
@@ -450,8 +451,9 @@ function DecryptPanel({ selectedFriendId, onActivityConsumed }: { selectedFriend
       <Button
         onClick={onDecrypt}
         disabled={busy}
-        className="lg:h-11 lg:px-6"
+        className="h-12 w-full gap-2 rounded-full text-sm font-semibold shadow-lg shadow-primary/20 transition-transform active:scale-[0.98] lg:h-11 lg:w-auto lg:px-7"
       >
+        <Unlock className="h-4 w-4 shrink-0" />
         {busy ? t("app_decrypting") : t("app_decrypt_btn")}
       </Button>
 
