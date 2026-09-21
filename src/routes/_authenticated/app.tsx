@@ -232,7 +232,7 @@ function Workspace() {
               aria-selected={tab === "encrypt"}
               variant="ghost"
               onClick={() => setTab("encrypt")}
-              className={`mode-barrel-option relative z-10 h-16 min-w-0 flex-row gap-2 rounded-lg px-2 text-xs transition-all duration-300 hover:bg-transparent sm:text-sm lg:h-24 lg:flex-col lg:gap-1 lg:px-0.5 lg:text-[11px] ${tab === "encrypt" ? "mode-barrel-option-active text-primary" : "mode-barrel-option-away text-muted-foreground"}`}
+              className={`mode-barrel-option relative z-10 h-11 min-w-0 flex-row gap-2 rounded-lg px-2 text-xs transition-all duration-300 hover:bg-transparent sm:text-sm lg:h-24 lg:flex-col lg:gap-1 lg:px-0.5 lg:text-[11px] ${tab === "encrypt" ? "mode-barrel-option-active text-primary" : "mode-barrel-option-away text-muted-foreground"}`}
             >
               <Lock className="h-4 w-4 shrink-0" />
               <span className="max-w-full truncate">{t("app_encrypt")}</span>
@@ -243,7 +243,7 @@ function Workspace() {
               aria-selected={tab === "decrypt"}
               variant="ghost"
               onClick={() => setTab("decrypt")}
-              className={`mode-barrel-option relative z-10 h-16 min-w-0 flex-row gap-2 rounded-lg px-2 text-xs transition-all duration-300 hover:bg-transparent sm:text-sm lg:h-24 lg:flex-col lg:gap-1 lg:px-0.5 lg:text-[11px] ${tab === "decrypt" ? "mode-barrel-option-active text-primary" : "mode-barrel-option-away text-muted-foreground"}`}
+              className={`mode-barrel-option relative z-10 h-11 min-w-0 flex-row gap-2 rounded-lg px-2 text-xs transition-all duration-300 hover:bg-transparent sm:text-sm lg:h-24 lg:flex-col lg:gap-1 lg:px-0.5 lg:text-[11px] ${tab === "decrypt" ? "mode-barrel-option-active text-primary" : "mode-barrel-option-away text-muted-foreground"}`}
             >
               <Unlock className="h-4 w-4 shrink-0" />
               <span className="max-w-full truncate">{t("app_decrypt")}</span>
