@@ -188,7 +188,17 @@ function Workspace() {
             role="tablist"
             aria-label={`${t("app_encrypt")} / ${t("app_decrypt")}`}
             aria-orientation="vertical"
-            className="sticky top-0 grid grid-rows-2 rounded-xl border border-border bg-card p-1 shadow-lg"
+            onKeyDown={(event) => {
+              if (event.key === "ArrowUp") {
+                event.preventDefault();
+                setTab("encrypt");
+              }
+              if (event.key === "ArrowDown") {
+                event.preventDefault();
+                setTab("decrypt");
+              }
+            }}
+            className="relative sticky top-0 grid grid-rows-2 rounded-xl border border-border bg-card p-1 shadow-lg"
           >
             <span
               aria-hidden="true"
