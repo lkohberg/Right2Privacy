@@ -9,7 +9,7 @@ import { postWrappedKey, fetchWrappedKey, archiveMessageKey, fetchArchivedKey } 
 import { encryptMessage, parseBlob, unwrapRawKey, wrapRawKeyFor, decryptWithRawKey } from "@/lib/crypto";
 import { loadPrivateKey } from "@/lib/keystore";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, BellRing, Check, ChevronRight, Copy, Lock, MessageCircle, Unlock, X } from "lucide-react";
+import { ArrowLeft, BellRing, Check, ChevronRight, ClipboardPaste, Copy, KeyRound, Lock, MessageCircle, ShieldCheck, Unlock, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useActivity } from "@/components/activity-provider";
 import { dismissMessageReminder } from "@/lib/activity.functions";
@@ -148,7 +148,11 @@ function Workspace() {
         </div>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto lg:px-8 lg:py-7">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto grid w-full max-w-7xl items-start gap-6 lg:grid-cols-[16rem_minmax(0,1fr)_16rem]">
+      <div className="hidden lg:block">
+        <ContactCard friend={selectedFriend} waitingCount={selectedFriend ? (waitingByFriend[selectedFriend.other.id] ?? 0) : 0} />
+      </div>
+      <div className="mx-auto w-full min-w-0 max-w-3xl">
       {activity.messages.length > 0 && (
         <div className="mb-5 border-l-2 border-primary bg-card px-4 py-3">
           <div className="mb-2 flex items-center gap-2 text-sm font-medium">
@@ -255,6 +259,10 @@ function Workspace() {
 
       <FieldStyles />
       </div>
+      <div className="hidden lg:block">
+        <SecurityPanel />
+      </div>
+      </div>
       </div>
         </section>
       </div>
@@ -326,7 +334,7 @@ function EncryptPanel({ friends, selectedFriendId }: { friends: Friend[]; select
 
   return (
     <div className="space-y-5">
-      <Field label={t("app_message")}>
+      <Field label={t("app_message")} action={<PasteButton onPaste={setText} />}>
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -439,7 +447,7 @@ function DecryptPanel({ selectedFriendId, onActivityConsumed }: { selectedFriend
 
   return (
     <div className="space-y-5">
-      <Field label={t("app_ciphertext_input")}>
+      <Field label={t("app_ciphertext_input")} action={<PasteButton onPaste={setBlob} />}>
         <textarea
           value={blob}
           onChange={(e) => setBlob(e.target.value)}
@@ -476,16 +484,130 @@ function DecryptPanel({ selectedFriendId, onActivityConsumed }: { selectedFriend
 
 function Field({
   label,
+  action,
   children,
 }: {
   label: string;
+  action?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
     <label className="block">
-      <div className="mb-1 text-sm font-medium">{label}</div>
+      <div className="mb-1 flex items-center justify-between gap-2">
+        <div className="text-sm font-medium">{label}</div>
+        {action}
+      </div>
       {children}
     </label>
+  );
+}
+
+function PasteButton({ onPaste }: { onPaste: (text: string) => void }) {
+  const { t } = useTranslation();
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      onClick={async (event) => {
+        event.preventDefault();
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text) onPaste(text);
+        } catch {
+          // clipboard access denied or unavailable
+        }
+      }}
+      className="h-6 gap-1 rounded-md px-2 text-xs text-muted-foreground"
+    >
+      <ClipboardPaste className="h-3.5 w-3.5" />
+      {t("app_paste")}
+    </Button>
+  );
+}
+
+async function keyFingerprint(publicKeyB64: string): Promise<string | null> {
+  try {
+    const der = Uint8Array.from(atob(publicKeyB64), (c) => c.charCodeAt(0));
+    const hash = await crypto.subtle.digest("SHA-256", der);
+    return Array.from(new Uint8Array(hash).slice(0, 8))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+  } catch {
+    return null;
+  }
+}
+
+function ContactCard({ friend, waitingCount }: { friend?: Friend; waitingCount: number }) {
+  const { t } = useTranslation();
+  const [fingerprint, setFingerprint] = useState<string | null>(null);
+
+  useEffect(() => {
+    setFingerprint(null);
+    if (!friend?.other.public_key) return;
+    let cancelled = false;
+    keyFingerprint(friend.other.public_key).then((fp) => {
+      if (!cancelled) setFingerprint(fp);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [friend?.other.public_key]);
+
+  if (!friend) {
+    return (
+      <div className="rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">
+        {t("contact_none")}
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl border border-border bg-card p-4">
+      <div className="mb-3 flex items-center gap-3">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary font-mono text-xs font-semibold uppercase text-secondary-foreground">
+          {friend.other.handle.slice(0, 2)}
+        </span>
+        <div className="min-w-0">
+          <div className="truncate font-mono text-sm font-semibold">@{friend.other.handle}</div>
+          {waitingCount > 0 && (
+            <div className="mt-0.5 flex items-center gap-1.5 text-[11px] font-medium text-primary">
+              <BellRing className="h-3 w-3" /> {t("contact_waiting")}
+            </div>
+          )}
+        </div>
+      </div>
+      {fingerprint && (
+        <div>
+          <div className="mb-1 flex items-center gap-1.5 text-[11px] font-medium uppercase text-muted-foreground">
+            <KeyRound className="h-3 w-3" /> {t("contact_fingerprint")}
+          </div>
+          <div className="break-all font-mono text-[11px] leading-relaxed text-foreground/80">
+            {fingerprint.match(/.{1,4}/g)?.join(" ")}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SecurityPanel() {
+  const { t } = useTranslation();
+  const items = [t("sec_aes"), t("sec_fresh"), t("sec_rsa"), t("sec_local"), t("sec_blind")];
+  return (
+    <div className="rounded-xl border border-border bg-card p-4">
+      <div className="mb-3 flex items-center gap-2 text-sm font-semibold">
+        <ShieldCheck className="h-4 w-4 text-primary" /> {t("side_security")}
+      </div>
+      <ul className="space-y-2.5">
+        {items.map((item) => (
+          <li key={item} className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
+            <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
