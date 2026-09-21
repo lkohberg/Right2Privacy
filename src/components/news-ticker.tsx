@@ -70,7 +70,12 @@ export function NewsTicker() {
   if (entries.length === 0) return null;
 
   return (
-    <div className="ticker-mask flex h-12 shrink-0 items-center overflow-hidden border-t border-border bg-background/60">
+    <div className="shrink-0 border-t border-border bg-background/60">
+      <p className="px-4 pt-2 text-center text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+        Your Right to privacy is worth being Protected
+      </p>
+      <div className="ticker-mask mt-1 flex h-12 items-center overflow-hidden">
+
       <div className="flex h-full shrink-0 items-center gap-1.5 border-r border-border px-3">
         <Radio className="h-4 w-4 text-primary" />
         <span className="text-xs font-semibold uppercase tracking-wide text-primary">
