@@ -76,7 +76,7 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
 
   return (
     <div className="min-h-screen bg-background pb-[calc(5.75rem+env(safe-area-inset-bottom))] text-foreground lg:p-6 lg:pb-6">
-      <div className="lg:mx-auto lg:grid lg:min-h-[calc(100vh-3rem)] lg:max-w-7xl lg:grid-cols-[5rem_minmax(0,1fr)] lg:overflow-hidden lg:rounded-xl lg:border lg:border-border lg:bg-card lg:shadow-2xl">
+      <div className="lg:grid lg:min-h-[calc(100vh-3rem)] lg:grid-cols-[5rem_minmax(0,1fr)] lg:overflow-hidden lg:rounded-xl lg:border lg:border-border lg:bg-card lg:shadow-2xl">
       <header className="border-b border-border lg:border-b-0 lg:border-r">
         <div className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 lg:flex lg:h-full lg:flex-col lg:px-3 lg:py-6">
           <Link to="/app" className="flex min-w-0 items-center gap-2 text-sm font-mono">
