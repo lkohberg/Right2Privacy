@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Eye, EyeOff, Search, ShieldCheck } from "lucide-react";
+import { Eye, Search, ShieldCheck } from "lucide-react";
 import {
   WATCH_CATEGORIES,
   WATCHED_SERVICES,
@@ -193,5 +193,3 @@ function Chip({
     </button>
   );
 }
-
-export { EyeOff };

@@ -135,6 +135,19 @@ function SettingsPage() {
           </div>
         </Card>
 
+        <Card title="Watchlist">
+          <Link
+            to="/watchlist"
+            className="flex items-center justify-between gap-3 px-4 py-3 text-sm hover:bg-accent"
+          >
+            <span className="flex items-center gap-2">
+              <Eye className="h-4 w-4 text-muted-foreground" />
+              Which services are being watched
+            </span>
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </Link>
+        </Card>
+
         <Card title={t("settings_encryption")}>
           <Row label={t("settings_priv_local")}>
             {hasLocalKey === null
