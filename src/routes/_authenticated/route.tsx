@@ -113,30 +113,10 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
       </header>
       <Outlet />
       <nav className="fixed inset-x-0 bottom-0 z-50 px-3 pb-[calc(0.5rem+env(safe-area-inset-bottom))] sm:hidden" aria-label="Mobile navigation">
-        <div className="grid h-[4.5rem] grid-cols-5 items-stretch rounded-[1.35rem] border border-border bg-card/95 p-1 shadow-2xl backdrop-blur-xl">
+        <div className="grid h-[4.5rem] grid-cols-3 items-stretch rounded-[1.35rem] border border-border bg-card/95 p-1 shadow-2xl backdrop-blur-xl">
           <MobileNavLink to="/app" label={t("nav_messages")} badge={activityCount} icon={<Lock />} />
           <MobileNavLink to="/friends" label={t("nav_friends")} badge={requestCount} icon={<Users />} />
           <MobileNavLink to="/settings" label={t("nav_settings")} icon={<Settings />} />
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={enableBrowserAlerts}
-            title={browserAlertsEnabled ? t("notifications_enabled") : t("notifications_enable")}
-            aria-label={browserAlertsEnabled ? t("notifications_enabled") : t("notifications_enable")}
-            className={`h-full min-w-0 rounded-2xl px-1 text-muted-foreground ${browserAlertsEnabled ? "bg-accent text-primary" : ""}`}
-          >
-            {browserAlertsEnabled ? <BellRing className="h-5 w-5" /> : <Bell className="h-5 w-5" />}
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={onSignOut}
-            title={t("nav_signout")}
-            aria-label={t("nav_signout")}
-            className="h-full min-w-0 rounded-2xl px-1 text-muted-foreground"
-          >
-            <LogOut className="h-5 w-5" />
-          </Button>
         </div>
       </nav>
     </div>
