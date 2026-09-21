@@ -183,7 +183,7 @@ function Workspace() {
           {t("app_no_friends")}
         </div>
       ) : (
-        <div className="grid grid-cols-[4.75rem_minmax(0,1fr)] items-start gap-4 sm:grid-cols-[5.25rem_minmax(0,1fr)] lg:gap-6">
+        <div className="grid grid-cols-[minmax(0,1fr)_4.75rem] items-start gap-4 sm:grid-cols-[minmax(0,1fr)_5.25rem] lg:gap-6">
           <div className="col-start-1 min-w-0 overflow-hidden">
             <div
               role="tabpanel"
