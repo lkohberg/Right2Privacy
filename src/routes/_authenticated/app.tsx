@@ -503,8 +503,11 @@ function FieldStyles() {
         border: 1px solid var(--color-border);
         border-radius: 0.375rem;
         padding: 0.5rem 0.75rem;
-        font-size: 0.9rem;
+        font-size: 16px;
         outline: none;
+      }
+      @media (min-width: 1024px) {
+        .r2p-input { font-size: 0.9rem; }
       }
       .r2p-input:focus { border-color: var(--color-ring); }
     `}</style>
