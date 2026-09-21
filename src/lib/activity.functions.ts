@@ -12,7 +12,6 @@ export const getActivity = createServerFn({ method: "GET" })
           .from("pending_keys")
           .select("id, message_id, sender_id, created_at")
           .eq("recipient_id", userId)
-          .is("dismissed_at", null)
           .order("created_at", { ascending: false }),
         supabase
           .from("friendships")

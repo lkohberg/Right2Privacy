@@ -5,7 +5,9 @@ import { useServerFn } from "@tanstack/react-start";
 
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { MessageSquare, X } from "lucide-react";
 import { getActivity } from "@/lib/activity.functions";
+import { Button } from "@/components/ui/button";
 
 export type ActivityMessage = {
   id: string;
@@ -83,7 +85,42 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
           to: "/app",
           search: { contact: item.sender_id, mode: "decrypt" as const },
         });
-      toast(body, { action: { label: t("app_decrypt"), onClick: open } });
+      toast.custom(
+        (toastId) => (
+          <div className="flex w-[min(24rem,calc(100vw-2rem))] items-center gap-3 rounded-xl border border-border bg-background/95 p-3 text-foreground shadow-2xl backdrop-blur-xl">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
+              <MessageSquare className="h-5 w-5" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-medium text-primary">{t("activity_title")}</p>
+              <p className="mt-0.5 truncate text-sm font-semibold">@{item.handle}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{body}</p>
+            </div>
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => {
+                toast.dismiss(toastId);
+                void open();
+              }}
+              className="shrink-0 rounded-full px-3"
+            >
+              {t("app_decrypt")}
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => toast.dismiss(toastId)}
+              aria-label={t("activity_dismiss")}
+              className="h-8 w-8 shrink-0 rounded-full"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        ),
+        { duration: 6000 },
+      );
       if (browserAlerts && Notification.permission === "granted") {
         const notification = new Notification("Right2Privacy", {
           body,
