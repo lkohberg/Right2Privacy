@@ -9,10 +9,9 @@ import { postWrappedKey, fetchWrappedKey, archiveMessageKey, fetchArchivedKey } 
 import { encryptMessage, parseBlob, unwrapRawKey, wrapRawKeyFor, decryptWithRawKey } from "@/lib/crypto";
 import { loadPrivateKey } from "@/lib/keystore";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, BellRing, Check, ChevronRight, Copy, Lock, MessageCircle, Unlock, X } from "lucide-react";
+import { ArrowLeft, Check, ChevronRight, Copy, Lock, MessageCircle, Unlock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useActivity } from "@/components/activity-provider";
-import { dismissMessageReminder } from "@/lib/activity.functions";
 import { NewsTicker } from "@/components/news-ticker";
 
 export const Route = createFileRoute("/_authenticated/app")({
@@ -52,7 +51,6 @@ function Workspace() {
 
   const { t } = useTranslation();
   const activity = useActivity();
-  const dismissReminder = useServerFn(dismissMessageReminder);
   const listFriendsFn = useServerFn(listFriends);
   const friendsQ = useQuery({
     queryKey: ["friends"],
@@ -79,11 +77,6 @@ function Workspace() {
     counts[item.sender_id] = (counts[item.sender_id] ?? 0) + 1;
     return counts;
   }, {});
-
-  async function dismiss(id: string) {
-    await dismissReminder({ data: { id } });
-    await activity.refresh();
-  }
 
   function openContact(friendId: string, nextTab: "encrypt" | "decrypt" = "encrypt") {
     setSelectedFriendId(friendId);
@@ -170,33 +163,6 @@ function Workspace() {
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto lg:px-8 lg:py-7">
       <div className="mx-auto max-w-3xl">
-      {activity.messages.length > 0 && (
-        <div className="mb-5 border-l-2 border-primary bg-card px-4 py-3">
-          <div className="mb-2 flex items-center gap-2 text-sm font-medium">
-            <BellRing className="h-4 w-4 text-primary" /> {t("activity_title")}
-          </div>
-          <div className="space-y-1">
-            {activity.messages.map((item) => (
-              <div key={item.id} className="flex items-center gap-2 text-sm">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => {
-                    openContact(item.sender_id, "decrypt");
-                  }}
-                  className="h-auto min-w-0 flex-1 justify-start truncate px-0 py-1 text-left text-muted-foreground hover:bg-transparent hover:text-foreground"
-                >
-                  {t("activity_key_waiting", { handle: item.handle })}
-                </Button>
-                <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => dismiss(item.id)} aria-label={t("activity_dismiss")} title={t("activity_dismiss")}>
-                  <X />
-                </Button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {friendsQ.isLoading ? (
         <div className="text-sm text-muted-foreground">{t("app_loading_friends")}</div>
       ) : accepted.length === 0 ? (
