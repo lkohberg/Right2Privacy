@@ -16,10 +16,13 @@ import { dismissMessageReminder } from "@/lib/activity.functions";
 import { NewsTicker } from "@/components/news-ticker";
 
 export const Route = createFileRoute("/_authenticated/app")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    contact: typeof search.contact === "string" ? search.contact : undefined,
-    mode: search.mode === "decrypt" ? ("decrypt" as const) : undefined,
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { contact?: string; mode?: "decrypt" } => ({
+    ...(typeof search.contact === "string" ? { contact: search.contact } : {}),
+    ...(search.mode === "decrypt" ? { mode: "decrypt" as const } : {}),
   }),
+
   head: () => ({
     meta: [
       { title: "Contacts — Right2Privacy" },
