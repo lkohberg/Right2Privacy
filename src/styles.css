@@ -266,6 +266,11 @@
   animation: r2p-ticker 90s linear infinite;
 }
 
+.ticker-fade {
+  mask-image: linear-gradient(to right, transparent, black 3rem, black calc(100% - 3rem), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 3rem, black calc(100% - 3rem), transparent);
+}
+
 .ticker-mask:hover .ticker-track {
   animation-play-state: paused;
 }
