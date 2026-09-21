@@ -93,6 +93,8 @@ export function NewsTicker() {
           ))}
         </div>
       </div>
+      </div>
     </div>
+
   );
 }
