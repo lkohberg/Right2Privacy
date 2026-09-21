@@ -73,17 +73,17 @@ function Workspace() {
   const selectedFriend = accepted.find((friend) => friend.other.id === selectedFriendId);
 
   return (
-    <main className="mx-auto max-w-6xl px-0 py-0 lg:px-6 lg:py-8">
-      <div className="grid gap-6 lg:grid-cols-[15rem_minmax(0,1fr)]">
-        <aside className={`${mobileContactOpen ? "hidden" : "block"} min-w-0 lg:block lg:border-r lg:border-border lg:pr-5`}>
-          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 border-b border-border px-4 pb-4 pt-5 lg:mb-3 lg:border-b-0 lg:px-0 lg:pb-0 lg:pt-0">
+    <main className="h-full px-0 py-0">
+      <div className="grid h-full lg:min-h-[calc(100vh-3rem)] lg:grid-cols-[20rem_minmax(0,1fr)]">
+        <aside className={`${mobileContactOpen ? "hidden" : "block"} min-w-0 lg:block lg:border-r lg:border-border lg:bg-background/30`}>
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 border-b border-border px-4 pb-4 pt-5 lg:px-6 lg:pb-5 lg:pt-7">
             <div className="min-w-0">
-              <p className="mb-1 text-xs font-medium uppercase text-primary">Right2Privacy</p>
-              <h1 className="truncate text-2xl font-semibold lg:text-xs lg:uppercase lg:text-muted-foreground">{t("nav_messages")}</h1>
+              <p className="mb-1 text-xs font-medium uppercase text-primary lg:hidden">Right2Privacy</p>
+              <h1 className="truncate text-2xl font-semibold lg:text-xl">{t("nav_messages")}</h1>
             </div>
-            <span className="pb-1 text-sm text-muted-foreground lg:text-xs">{accepted.length}</span>
+            <span className="pb-1 text-sm text-muted-foreground">{accepted.length}</span>
           </div>
-          <div className="divide-y divide-border lg:flex lg:flex-col lg:divide-y-0">
+          <div className="divide-y divide-border lg:flex lg:flex-col lg:gap-1 lg:divide-y-0 lg:p-3">
             {friendsQ.isLoading && (
               <div className="px-4 py-8 text-center text-sm text-muted-foreground lg:hidden">{t("app_loading_friends")}</div>
             )}
@@ -99,14 +99,14 @@ function Workspace() {
                   type="button"
                   variant="ghost"
                   onClick={() => openContact(friend.other.id, count > 0 ? "decrypt" : "encrypt")}
-                  className={`h-[4.75rem] w-full justify-start rounded-none px-4 font-mono lg:h-10 lg:min-w-32 lg:w-full lg:rounded-md lg:px-3 ${selected ? "lg:bg-accent lg:text-accent-foreground" : "text-foreground lg:text-muted-foreground"}`}
+                  className={`h-[4.75rem] w-full justify-start rounded-none px-4 font-mono lg:h-[4.25rem] lg:min-w-32 lg:rounded-lg lg:px-3 ${selected ? "lg:border lg:border-border lg:bg-accent lg:text-accent-foreground" : "text-foreground lg:text-muted-foreground"}`}
                 >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold uppercase text-secondary-foreground lg:h-6 lg:w-6 lg:text-[11px]">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold uppercase text-secondary-foreground">
                     {friend.other.handle.slice(0, 2)}
                   </span>
                   <span className="min-w-0 flex-1 text-left">
                     <span className="block truncate text-[15px] font-semibold">@{friend.other.handle}</span>
-                    <span className="mt-0.5 block truncate font-sans text-xs font-normal text-muted-foreground lg:hidden">
+                    <span className="mt-0.5 block truncate font-sans text-xs font-normal text-muted-foreground">
                       {count > 0 ? t("activity_key_waiting", { handle: friend.other.handle }) : t("app_encrypt")}
                     </span>
                   </span>
@@ -122,7 +122,7 @@ function Workspace() {
           </div>
         </aside>
 
-        <section className={`${mobileContactOpen ? "block" : "hidden"} min-w-0 px-4 pb-6 pt-3 lg:block lg:px-0 lg:pb-0 lg:pt-0`}>
+        <section className={`${mobileContactOpen ? "block" : "hidden"} min-w-0 px-4 pb-6 pt-3 lg:flex lg:min-h-0 lg:flex-col lg:px-0 lg:pb-0 lg:pt-0`}>
       <div className="mb-4 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2 border-b border-border pb-3 lg:hidden">
         <Button type="button" variant="ghost" size="icon" onClick={() => setMobileContactOpen(false)} aria-label={t("nav_messages")} className="rounded-full">
           <ArrowLeft className="h-5 w-5" />
@@ -134,7 +134,22 @@ function Workspace() {
           <span className="truncate font-mono text-base font-semibold">{selectedFriend ? `@${selectedFriend.other.handle}` : t("nav_messages")}</span>
         </div>
       </div>
-      <div className="mb-6 flex gap-1 rounded-xl border border-border bg-card p-1 text-sm lg:rounded-md">
+      <div className="hidden h-20 shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b border-border px-8 lg:grid">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary font-mono text-xs font-semibold uppercase text-secondary-foreground">
+            {selectedFriend?.other.handle.slice(0, 2) ?? <MessageCircle className="h-4 w-4" />}
+          </span>
+          <div className="min-w-0">
+            <div className="truncate font-mono text-sm font-semibold">{selectedFriend ? `@${selectedFriend.other.handle}` : t("nav_messages")}</div>
+            <div className="mt-1 flex items-center gap-2 text-[10px] font-medium uppercase text-primary">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" /> AES-GCM 256
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto lg:px-8 lg:py-7">
+      <div className="mx-auto max-w-3xl">
+      <div className="mb-6 flex gap-1 rounded-xl border border-border bg-card p-1 text-sm">
         <Button
           type="button"
           variant="ghost"
@@ -193,6 +208,8 @@ function Workspace() {
       )}
 
       <FieldStyles />
+      </div>
+      </div>
         </section>
       </div>
     </main>
@@ -262,19 +279,20 @@ function EncryptPanel({ friends, selectedFriendId }: { friends: Friend[]; select
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <Field label={t("app_message")}>
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          rows={5}
-          className="r2p-input"
+          rows={7}
+          className="r2p-input resize-none lg:min-h-44"
           placeholder={t("app_message_ph")}
         />
       </Field>
       <Button
         onClick={onEncrypt}
         disabled={busy}
+        className="lg:h-11 lg:px-6"
       >
         {busy ? t("app_encrypting") : t("app_encrypt_btn")}
       </Button>
@@ -373,19 +391,20 @@ function DecryptPanel({ selectedFriendId, onActivityConsumed }: { selectedFriend
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <Field label={t("app_ciphertext_input")}>
         <textarea
           value={blob}
           onChange={(e) => setBlob(e.target.value)}
-          rows={5}
-          className="r2p-input font-mono text-xs"
+          rows={7}
+          className="r2p-input resize-none font-mono text-xs lg:min-h-44"
           placeholder={t("app_ciphertext_ph")}
         />
       </Field>
       <Button
         onClick={onDecrypt}
         disabled={busy}
+        className="lg:h-11 lg:px-6"
       >
         {busy ? t("app_decrypting") : t("app_decrypt_btn")}
       </Button>

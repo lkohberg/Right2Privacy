@@ -75,17 +75,19 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
   const requestCount = friendRequests.length;
 
   return (
-    <div className="min-h-screen bg-background pb-[calc(5.75rem+env(safe-area-inset-bottom))] text-foreground lg:pb-0">
-      <header className="border-b border-border">
-        <div className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 lg:flex lg:justify-between lg:px-6">
+    <div className="min-h-screen bg-background pb-[calc(5.75rem+env(safe-area-inset-bottom))] text-foreground lg:p-6 lg:pb-6">
+      <div className="lg:mx-auto lg:grid lg:min-h-[calc(100vh-3rem)] lg:max-w-7xl lg:grid-cols-[5rem_minmax(0,1fr)] lg:overflow-hidden lg:rounded-xl lg:border lg:border-border lg:bg-card lg:shadow-2xl">
+      <header className="border-b border-border lg:border-b-0 lg:border-r">
+        <div className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 lg:flex lg:h-full lg:flex-col lg:px-3 lg:py-6">
           <Link to="/app" className="flex min-w-0 items-center gap-2 text-sm font-mono">
-            <Lock className="h-4 w-4 shrink-0 text-primary" />
-            <span className="truncate">Right2Privacy</span>
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"><Lock className="h-5 w-5" /></span>
+            <span className="truncate lg:hidden">Right2Privacy</span>
           </Link>
-          <nav className="hidden shrink-0 items-center gap-1 text-sm lg:flex">
+          <nav className="hidden shrink-0 items-center gap-1 text-sm lg:mt-10 lg:flex lg:flex-1 lg:flex-col lg:gap-3">
             <NavLink to="/app" label={t("nav_messages")} badge={activityCount} icon={<Lock className="h-4 w-4" />} />
             <NavLink to="/friends" label={t("nav_friends")} badge={requestCount} icon={<Users className="h-4 w-4" />} />
             <NavLink to="/settings" label={t("nav_settings")} icon={<Settings className="h-4 w-4" />} />
+            <div className="mt-auto flex flex-col gap-2">
             <Button
               type="button"
               variant="ghost"
@@ -93,7 +95,7 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
               onClick={enableBrowserAlerts}
               title={browserAlertsEnabled ? t("notifications_enabled") : t("notifications_enable")}
               aria-label={browserAlertsEnabled ? t("notifications_enabled") : t("notifications_enable")}
-              className="h-8 w-8 text-muted-foreground"
+              className="h-10 w-10 rounded-lg text-muted-foreground"
             >
               {browserAlertsEnabled ? <BellRing /> : <Bell />}
             </Button>
@@ -102,16 +104,18 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
               variant="ghost"
               size="icon"
               onClick={onSignOut}
-              className="h-8 w-8 text-muted-foreground"
+              className="h-10 w-10 rounded-lg text-muted-foreground"
               title={t("nav_signout")}
               aria-label={t("nav_signout")}
             >
               <LogOut className="h-4 w-4" />
             </Button>
+            </div>
           </nav>
         </div>
       </header>
-      <Outlet />
+      <div className="min-w-0"><Outlet /></div>
+      </div>
       <nav className="fixed inset-x-0 bottom-0 z-50 px-3 pb-[calc(0.5rem+env(safe-area-inset-bottom))] lg:hidden" aria-label="Mobile navigation">
         <div className="grid h-[4.5rem] grid-cols-3 items-stretch rounded-[1.35rem] border border-border bg-card/95 p-1 shadow-2xl backdrop-blur-xl">
           <MobileNavLink to="/app" label={t("nav_messages")} badge={activityCount} icon={<Lock />} />
@@ -170,13 +174,12 @@ function NavLink({
       to={to}
       title={label}
       aria-label={label}
-      className="flex items-center gap-1.5 rounded-md px-2 py-1.5 hover:bg-accent sm:px-3"
-      activeProps={{ className: "flex items-center gap-1.5 rounded-md px-2 py-1.5 bg-accent sm:px-3" }}
+      className="relative flex h-11 w-11 items-center justify-center rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground"
+      activeProps={{ className: "relative flex h-11 w-11 items-center justify-center rounded-lg bg-accent text-primary" }}
     >
       {icon}
-      <span className="hidden sm:inline">{label}</span>
       {badge > 0 && (
-        <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold leading-none text-primary-foreground">
+        <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold leading-none text-primary-foreground">
           {badge > 99 ? "99+" : badge}
         </span>
       )}
