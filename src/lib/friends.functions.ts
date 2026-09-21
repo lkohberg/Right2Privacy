@@ -166,8 +166,16 @@ export const sendFriendRequest = createServerFn({ method: "POST" })
       addressee_id: data.addressee_id,
       status: "pending",
     });
-    if (error) throw new Error(error.message);
+    if (error) {
+      // Unique violation (e.g. double submit racing the check above) —
+      // report it as a normal result, never as a raw database error.
+      if (error.code === "23505") {
+        return { ok: false, reason: "already_requested" } as const;
+      }
+      throw new Error(error.message);
+    }
     return { ok: true, autoAccepted: false };
+
 
   });
 
