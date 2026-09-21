@@ -9,7 +9,7 @@ import { postWrappedKey, fetchWrappedKey, archiveMessageKey, fetchArchivedKey } 
 import { encryptMessage, parseBlob, unwrapRawKey, wrapRawKeyFor, decryptWithRawKey } from "@/lib/crypto";
 import { loadPrivateKey } from "@/lib/keystore";
 import { supabase } from "@/integrations/supabase/client";
-import { BellRing, Check, Copy, Lock, Unlock, X } from "lucide-react";
+import { ArrowLeft, BellRing, Check, ChevronRight, Copy, Lock, MessageCircle, Unlock, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useActivity } from "@/components/activity-provider";
 import { dismissMessageReminder } from "@/lib/activity.functions";
@@ -38,6 +38,7 @@ type Friend = {
 function Workspace() {
   const [tab, setTab] = useState<"encrypt" | "decrypt">("encrypt");
   const [selectedFriendId, setSelectedFriendId] = useState("");
+  const [mobileContactOpen, setMobileContactOpen] = useState(false);
   const { t } = useTranslation();
   const activity = useActivity();
   const dismissReminder = useServerFn(dismissMessageReminder);
@@ -63,15 +64,32 @@ function Workspace() {
     await activity.refresh();
   }
 
+  function openContact(friendId: string, nextTab: "encrypt" | "decrypt" = "encrypt") {
+    setSelectedFriendId(friendId);
+    setTab(nextTab);
+    setMobileContactOpen(true);
+  }
+
+  const selectedFriend = accepted.find((friend) => friend.other.id === selectedFriendId);
+
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+    <main className="mx-auto max-w-6xl px-0 py-0 sm:px-6 sm:py-8">
       <div className="grid gap-6 lg:grid-cols-[15rem_minmax(0,1fr)]">
-        <aside className="min-w-0 border-b border-border pb-5 lg:border-r lg:border-b-0 lg:pr-5 lg:pb-0">
-          <div className="mb-3 flex items-center justify-between">
-            <h1 className="text-xs font-semibold uppercase text-muted-foreground">{t("friends_list")}</h1>
-            <span className="text-xs text-muted-foreground">{accepted.length}</span>
+        <aside className={`${mobileContactOpen ? "hidden" : "block"} min-w-0 lg:block lg:border-r lg:border-border lg:pr-5`}>
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 border-b border-border px-4 pb-4 pt-5 sm:px-0 sm:pt-0 lg:mb-3 lg:border-b-0 lg:pb-0">
+            <div className="min-w-0">
+              <p className="mb-1 text-xs font-medium uppercase text-primary">Right2Privacy</p>
+              <h1 className="truncate text-2xl font-semibold sm:text-xs sm:uppercase sm:text-muted-foreground">{t("nav_messages")}</h1>
+            </div>
+            <span className="pb-1 text-sm text-muted-foreground sm:text-xs">{accepted.length}</span>
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible">
+          <div className="divide-y divide-border lg:flex lg:flex-col lg:divide-y-0">
+            {friendsQ.isLoading && (
+              <div className="px-4 py-8 text-center text-sm text-muted-foreground lg:hidden">{t("app_loading_friends")}</div>
+            )}
+            {!friendsQ.isLoading && accepted.length === 0 && (
+              <div className="px-4 py-8 text-center text-sm text-muted-foreground lg:hidden">{t("app_no_friends")}</div>
+            )}
             {accepted.map((friend) => {
               const count = waitingByFriend[friend.other.id] ?? 0;
               const selected = selectedFriendId === friend.other.id;
@@ -80,26 +98,43 @@ function Workspace() {
                   key={friend.friendship_id}
                   type="button"
                   variant="ghost"
-                  onClick={() => setSelectedFriendId(friend.other.id)}
-                  className={`h-10 min-w-32 justify-start px-3 font-mono lg:w-full ${selected ? "bg-accent text-accent-foreground" : "text-muted-foreground"}`}
+                  onClick={() => openContact(friend.other.id, count > 0 ? "decrypt" : "encrypt")}
+                  className={`h-[4.75rem] w-full justify-start rounded-none px-4 font-mono sm:h-10 sm:min-w-32 sm:rounded-md sm:px-3 lg:w-full ${selected ? "sm:bg-accent sm:text-accent-foreground" : "text-foreground sm:text-muted-foreground"}`}
                 >
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-secondary text-[11px] font-semibold uppercase text-secondary-foreground">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold uppercase text-secondary-foreground sm:h-6 sm:w-6 sm:text-[11px]">
                     {friend.other.handle.slice(0, 2)}
                   </span>
-                  <span className="min-w-0 flex-1 truncate text-left">@{friend.other.handle}</span>
-                  {count > 0 && (
-                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
-                      {count}
+                  <span className="min-w-0 flex-1 text-left">
+                    <span className="block truncate text-[15px] font-semibold">@{friend.other.handle}</span>
+                    <span className="mt-0.5 block truncate font-sans text-xs font-normal text-muted-foreground sm:hidden">
+                      {count > 0 ? t("activity_key_waiting", { handle: friend.other.handle }) : t("app_encrypt")}
                     </span>
-                  )}
+                  </span>
+                  <span className="flex shrink-0 items-center gap-2">
+                    {count > 0 && (
+                      <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">{count}</span>
+                    )}
+                    <ChevronRight className="h-4 w-4 text-muted-foreground sm:hidden" />
+                  </span>
                 </Button>
               );
             })}
           </div>
         </aside>
 
-        <section className="min-w-0">
-      <div className="mb-6 flex gap-1 rounded-md border border-border bg-card p-1 text-sm">
+        <section className={`${mobileContactOpen ? "block" : "hidden"} min-w-0 px-4 pb-6 pt-3 lg:block lg:px-0 lg:pb-0 lg:pt-0`}>
+      <div className="mb-4 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2 border-b border-border pb-3 lg:hidden">
+        <Button type="button" variant="ghost" size="icon" onClick={() => setMobileContactOpen(false)} aria-label={t("nav_messages")} className="rounded-full">
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary font-mono text-xs font-semibold uppercase text-secondary-foreground">
+            {selectedFriend?.other.handle.slice(0, 2) ?? <MessageCircle className="h-4 w-4" />}
+          </span>
+          <span className="truncate font-mono text-base font-semibold">{selectedFriend ? `@${selectedFriend.other.handle}` : t("nav_messages")}</span>
+        </div>
+      </div>
+      <div className="mb-6 flex gap-1 rounded-xl border border-border bg-card p-1 text-sm lg:rounded-md">
         <Button
           type="button"
           variant="ghost"
@@ -130,8 +165,7 @@ function Workspace() {
                   type="button"
                   variant="ghost"
                   onClick={() => {
-                    setSelectedFriendId(item.sender_id);
-                    setTab("decrypt");
+                    openContact(item.sender_id, "decrypt");
                   }}
                   className="h-auto min-w-0 flex-1 justify-start truncate px-0 py-1 text-left text-muted-foreground hover:bg-transparent hover:text-foreground"
                 >
