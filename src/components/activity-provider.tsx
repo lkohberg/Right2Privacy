@@ -65,11 +65,24 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
 
     for (const item of newMessages) {
       const body = t("activity_key_waiting", { handle: item.handle });
-      toast(body);
+      const open = () =>
+        router.navigate({
+          to: "/app",
+          search: { contact: item.sender_id, mode: "decrypt" as const },
+        });
+      toast(body, { action: { label: t("app_decrypt"), onClick: open } });
       if (browserAlerts && Notification.permission === "granted") {
-        new Notification("Right2Privacy", { body, tag: `message:${item.id}` });
+        const notification = new Notification("Right2Privacy", {
+          body,
+          tag: `message:${item.id}`,
+        });
+        notification.onclick = () => {
+          window.focus();
+          void open();
+        };
       }
     }
+
     for (const item of newRequests) {
       const body = t("friends_request_from", { handle: item.handle });
       toast(body);
