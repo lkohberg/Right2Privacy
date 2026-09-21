@@ -29,6 +29,15 @@ type ActivityValue = {
   enableBrowserAlerts: () => Promise<void>;
 };
 
+const fallbackActivity: ActivityValue = {
+  messages: [],
+  friendRequests: [],
+  isLoading: false,
+  refresh: async () => {},
+  browserAlertsEnabled: false,
+  enableBrowserAlerts: async () => {},
+};
+
 const ActivityContext = createContext<ActivityValue | null>(null);
 
 export function ActivityProvider({ children }: { children: React.ReactNode }) {
