@@ -143,7 +143,7 @@ function Workspace() {
           </div>
         </aside>
 
-        <section className={`${mobileContactOpen ? "block" : "hidden"} min-w-0 px-4 pb-6 pt-3 lg:flex lg:min-h-0 lg:flex-col lg:px-0 lg:pb-0 lg:pt-0`}>
+        <section key={selectedFriendId || "none"} className={`${mobileContactOpen ? "block" : "hidden"} min-w-0 animate-chat-fade px-4 pb-6 pt-3 motion-reduce:animate-none lg:flex lg:min-h-0 lg:flex-col lg:px-0 lg:pb-0 lg:pt-0`}>
       <div className="mb-4 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2 border-b border-border pb-3 lg:hidden">
         <Button type="button" variant="ghost" size="icon" onClick={() => setMobileContactOpen(false)} aria-label={t("nav_messages")} className="rounded-full">
           <ArrowLeft className="h-5 w-5" />
