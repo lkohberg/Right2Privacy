@@ -92,6 +92,14 @@ function SettingsPage() {
           <Row label={t("settings_handle")}>
             {q.data ? <span className="font-mono">@{q.data.handle}</span> : "—"}
           </Row>
+          <Link
+            to="/watchlist"
+            className="hidden h-12 items-center justify-start gap-3 border-t border-border px-4 text-sm font-medium hover:bg-accent lg:flex"
+          >
+            <Eye className="h-4 w-4 text-muted-foreground" />
+            Which services are being watched
+            <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground" />
+          </Link>
           <div className="grid gap-2 border-t border-border p-3 lg:hidden">
             <Button type="button" variant="ghost" onClick={enableBrowserAlerts} className="h-11 justify-start gap-3 px-3">
               {browserAlertsEnabled ? <BellRing className="h-5 w-5 text-primary" /> : <Bell className="h-5 w-5" />}
@@ -141,19 +149,6 @@ function SettingsPage() {
               <div className="mt-1 text-xs text-destructive">{langError}</div>
             )}
           </div>
-        </Card>
-
-        <Card title="Watchlist">
-          <Link
-            to="/watchlist"
-            className="flex items-center justify-between gap-3 px-4 py-3 text-sm hover:bg-accent"
-          >
-            <span className="flex items-center gap-2">
-              <Eye className="h-4 w-4 text-muted-foreground" />
-              Which services are being watched
-            </span>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-          </Link>
         </Card>
 
         <Card title={t("settings_encryption")}>
