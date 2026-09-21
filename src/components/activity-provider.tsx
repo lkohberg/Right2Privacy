@@ -29,6 +29,15 @@ type ActivityValue = {
   enableBrowserAlerts: () => Promise<void>;
 };
 
+const fallbackActivity: ActivityValue = {
+  messages: [],
+  friendRequests: [],
+  isLoading: false,
+  refresh: async () => {},
+  browserAlertsEnabled: false,
+  enableBrowserAlerts: async () => {},
+};
+
 const ActivityContext = createContext<ActivityValue | null>(null);
 
 export function ActivityProvider({ children }: { children: React.ReactNode }) {
@@ -134,7 +143,5 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useActivity() {
-  const value = useContext(ActivityContext);
-  if (!value) throw new Error("useActivity must be used inside ActivityProvider");
-  return value;
+  return useContext(ActivityContext) ?? fallbackActivity;
 }
