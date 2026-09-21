@@ -12,6 +12,7 @@ export const getActivity = createServerFn({ method: "GET" })
           .from("pending_keys")
           .select("id, message_id, sender_id, created_at")
           .eq("recipient_id", userId)
+          .is("dismissed_at", null)
           .order("created_at", { ascending: false }),
         supabase
           .from("friendships")
@@ -64,6 +65,22 @@ export const dismissMessageReminder = createServerFn({ method: "POST" })
       .update({ dismissed_at: new Date().toISOString() })
       .eq("id", data.id)
       .eq("recipient_id", context.userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const clearContactNotifications = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { sender_id: string }) =>
+    z.object({ sender_id: z.string().uuid() }).parse(data),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("pending_keys")
+      .update({ dismissed_at: new Date().toISOString() })
+      .eq("recipient_id", context.userId)
+      .eq("sender_id", data.sender_id)
+      .is("dismissed_at", null);
     if (error) throw new Error(error.message);
     return { ok: true };
   });

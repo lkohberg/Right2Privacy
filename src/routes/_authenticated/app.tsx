@@ -3,15 +3,17 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import "@/i18n";
 import { listFriends, getMyProfile } from "@/lib/friends.functions";
 import { postWrappedKey, fetchWrappedKey, archiveMessageKey, fetchArchivedKey } from "@/lib/keys.functions";
 import { encryptMessage, parseBlob, unwrapRawKey, wrapRawKeyFor, decryptWithRawKey } from "@/lib/crypto";
 import { loadPrivateKey } from "@/lib/keystore";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Check, ChevronRight, Copy, Lock, MessageCircle, Unlock } from "lucide-react";
+import { ArrowLeft, BellOff, Check, ChevronRight, Copy, Lock, MessageCircle, Unlock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useActivity } from "@/components/activity-provider";
+import { clearContactNotifications } from "@/lib/activity.functions";
 import { NewsTicker } from "@/components/news-ticker";
 
 export const Route = createFileRoute("/_authenticated/app")({
@@ -48,10 +50,12 @@ function Workspace() {
   const [tab, setTab] = useState<"encrypt" | "decrypt">("encrypt");
   const [selectedFriendId, setSelectedFriendId] = useState("");
   const [mobileContactOpen, setMobileContactOpen] = useState(false);
+  const [clearingNotifications, setClearingNotifications] = useState(false);
 
   const { t } = useTranslation();
   const activity = useActivity();
   const listFriendsFn = useServerFn(listFriends);
+  const clearContactNotificationsFn = useServerFn(clearContactNotifications);
   const friendsQ = useQuery({
     queryKey: ["friends"],
     queryFn: () => listFriendsFn(),
@@ -85,6 +89,21 @@ function Workspace() {
   }
 
   const selectedFriend = accepted.find((friend) => friend.other.id === selectedFriendId);
+  const selectedWaitingCount = waitingByFriend[selectedFriendId] ?? 0;
+
+  async function clearSelectedContactNotifications() {
+    if (!selectedFriendId || selectedWaitingCount === 0) return;
+    setClearingNotifications(true);
+    try {
+      await clearContactNotificationsFn({ data: { sender_id: selectedFriendId } });
+      await activity.refresh();
+      toast.success(t("app_notifications_cleared"));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t("app_err_generic"));
+    } finally {
+      setClearingNotifications(false);
+    }
+  }
 
   return (
     <main className="h-full px-0 py-0">
@@ -137,7 +156,7 @@ function Workspace() {
         </aside>
 
         <section key={selectedFriendId || "none"} className={`${mobileContactOpen ? "block" : "hidden"} min-w-0 animate-chat-fade px-4 pb-6 pt-3 motion-reduce:animate-none lg:flex lg:min-h-0 lg:flex-col lg:px-0 lg:pb-0 lg:pt-0`}>
-      <div className="mb-4 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2 border-b border-border pb-3 lg:hidden">
+      <div className="mb-4 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 border-b border-border pb-3 lg:hidden">
         <Button type="button" variant="ghost" size="icon" onClick={() => setMobileContactOpen(false)} aria-label={t("nav_messages")} className="rounded-full">
           <ArrowLeft className="h-5 w-5" />
         </Button>
@@ -147,6 +166,18 @@ function Workspace() {
           </span>
           <span className="truncate font-mono text-base font-semibold">{selectedFriend ? `@${selectedFriend.other.handle}` : t("nav_messages")}</span>
         </div>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          disabled={!selectedFriend || selectedWaitingCount === 0 || clearingNotifications}
+          onClick={() => void clearSelectedContactNotifications()}
+          className="h-9 gap-1.5 rounded-full px-3 text-xs"
+          title={t("app_clear_notifications")}
+        >
+          <BellOff className="h-4 w-4" />
+          <span>{t("app_clear")}</span>
+        </Button>
       </div>
       <div className="hidden h-20 shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b border-border px-8 lg:grid">
         <div className="flex min-w-0 items-center gap-3">
@@ -160,6 +191,18 @@ function Workspace() {
             </div>
           </div>
         </div>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={!selectedFriend || selectedWaitingCount === 0 || clearingNotifications}
+          onClick={() => void clearSelectedContactNotifications()}
+          className="gap-2 rounded-full px-4"
+          title={t("app_clear_notifications")}
+        >
+          <BellOff className="h-4 w-4" />
+          {t("app_clear")}
+        </Button>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto lg:px-8 lg:py-7">
       <div className="mx-auto max-w-3xl">
