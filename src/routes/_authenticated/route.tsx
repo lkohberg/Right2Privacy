@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect, Link, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { Bell, BellRing, Lock, MessageSquare, Users, Settings, LogOut } from "lucide-react";
+import { Bell, BellRing, Eye, Lock, MessageSquare, Users, Settings, LogOut } from "lucide-react";
 import { clearPrivateKey } from "@/lib/keystore";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
