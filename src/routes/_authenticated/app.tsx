@@ -65,6 +65,16 @@ function Workspace() {
     if (!selectedFriendId && accepted[0]) setSelectedFriendId(accepted[0].other.id);
   }, [accepted, selectedFriendId]);
 
+  const requestedContact = search.contact;
+  const requestedMode = search.mode;
+  useEffect(() => {
+    if (!requestedContact) return;
+    setSelectedFriendId(requestedContact);
+    setTab(requestedMode === "decrypt" ? "decrypt" : "encrypt");
+    setMobileContactOpen(true);
+  }, [requestedContact, requestedMode]);
+
+
   const waitingByFriend = activity.messages.reduce<Record<string, number>>((counts, item) => {
     counts[item.sender_id] = (counts[item.sender_id] ?? 0) + 1;
     return counts;
