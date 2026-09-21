@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMyProfile, updateLanguage } from "@/lib/friends.functions";
@@ -8,7 +8,7 @@ import { clearPrivateKey, loadPrivateKey } from "@/lib/keystore";
 import { useTranslation } from "react-i18next";
 import "@/i18n";
 import { LANGUAGES, SUPPORTED_CODES } from "@/i18n/languages";
-import { Bell, BellRing, LogOut } from "lucide-react";
+import { Bell, BellRing, ChevronRight, Eye, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useActivity } from "@/components/activity-provider";
 
@@ -133,6 +133,19 @@ function SettingsPage() {
               <div className="mt-1 text-xs text-destructive">{langError}</div>
             )}
           </div>
+        </Card>
+
+        <Card title="Watchlist">
+          <Link
+            to="/watchlist"
+            className="flex items-center justify-between gap-3 px-4 py-3 text-sm hover:bg-accent"
+          >
+            <span className="flex items-center gap-2">
+              <Eye className="h-4 w-4 text-muted-foreground" />
+              Which services are being watched
+            </span>
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </Link>
         </Card>
 
         <Card title={t("settings_encryption")}>
