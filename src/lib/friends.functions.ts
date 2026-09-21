@@ -167,7 +167,7 @@ export const sendFriendRequest = createServerFn({ method: "POST" })
       status: "pending",
     });
     if (error) throw new Error(error.message);
-    return { ok: true, autoAccepted: false, already: false };
+    return { ok: true, autoAccepted: false };
 
   });
 
