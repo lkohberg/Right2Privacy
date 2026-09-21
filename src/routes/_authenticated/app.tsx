@@ -84,6 +84,12 @@ function Workspace() {
             <span className="pb-1 text-sm text-muted-foreground sm:text-xs">{accepted.length}</span>
           </div>
           <div className="divide-y divide-border lg:flex lg:flex-col lg:divide-y-0">
+            {friendsQ.isLoading && (
+              <div className="px-4 py-8 text-center text-sm text-muted-foreground lg:hidden">{t("app_loading_friends")}</div>
+            )}
+            {!friendsQ.isLoading && accepted.length === 0 && (
+              <div className="px-4 py-8 text-center text-sm text-muted-foreground lg:hidden">{t("app_no_friends")}</div>
+            )}
             {accepted.map((friend) => {
               const count = waitingByFriend[friend.other.id] ?? 0;
               const selected = selectedFriendId === friend.other.id;
