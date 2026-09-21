@@ -263,7 +263,7 @@
 
 @utility ticker-track {
   width: max-content;
-  animation: r2p-ticker 90s linear infinite;
+  animation: r2p-ticker 180s linear infinite;
 }
 
 .ticker-fade {
