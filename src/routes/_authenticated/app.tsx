@@ -9,13 +9,20 @@ import { postWrappedKey, fetchWrappedKey, archiveMessageKey, fetchArchivedKey } 
 import { encryptMessage, parseBlob, unwrapRawKey, wrapRawKeyFor, decryptWithRawKey } from "@/lib/crypto";
 import { loadPrivateKey } from "@/lib/keystore";
 import { supabase } from "@/integrations/supabase/client";
-import { Copy, Check, Lock, Unlock } from "lucide-react";
+import { BellRing, Check, Copy, Lock, Unlock, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useActivity } from "@/components/activity-provider";
+import { dismissMessageReminder } from "@/lib/activity.functions";
 
 export const Route = createFileRoute("/_authenticated/app")({
   head: () => ({
     meta: [
       { title: "Messages — Right2Privacy" },
       { name: "description", content: "Encrypt and decrypt messages." },
+      { property: "og:title", content: "Messages — Right2Privacy" },
+      { property: "og:description", content: "Encrypt and decrypt messages." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Workspace,
@@ -30,7 +37,10 @@ type Friend = {
 
 function Workspace() {
   const [tab, setTab] = useState<"encrypt" | "decrypt">("encrypt");
+  const [selectedFriendId, setSelectedFriendId] = useState("");
   const { t } = useTranslation();
+  const activity = useActivity();
+  const dismissReminder = useServerFn(dismissMessageReminder);
   const listFriendsFn = useServerFn(listFriends);
   const friendsQ = useQuery({
     queryKey: ["friends"],
@@ -39,23 +49,102 @@ function Workspace() {
   const accepted = ((friendsQ.data ?? []) as Friend[]).filter(
     (f) => f.status === "accepted",
   );
+  useEffect(() => {
+    if (!selectedFriendId && accepted[0]) setSelectedFriendId(accepted[0].other.id);
+  }, [accepted, selectedFriendId]);
+
+  const waitingByFriend = activity.messages.reduce<Record<string, number>>((counts, item) => {
+    counts[item.sender_id] = (counts[item.sender_id] ?? 0) + 1;
+    return counts;
+  }, {});
+
+  async function dismiss(id: string) {
+    await dismissReminder({ data: { id } });
+    await activity.refresh();
+  }
 
   return (
-    <main className="mx-auto max-w-3xl px-5 py-8 sm:px-6">
-      <div className="mb-6 flex gap-1 rounded-md border border-border p-1 text-sm">
-        <button
+    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+      <div className="grid gap-6 lg:grid-cols-[15rem_minmax(0,1fr)]">
+        <aside className="min-w-0 border-b border-border pb-5 lg:border-r lg:border-b-0 lg:pr-5 lg:pb-0">
+          <div className="mb-3 flex items-center justify-between">
+            <h1 className="text-xs font-semibold uppercase text-muted-foreground">{t("friends_list")}</h1>
+            <span className="text-xs text-muted-foreground">{accepted.length}</span>
+          </div>
+          <div className="flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible">
+            {accepted.map((friend) => {
+              const count = waitingByFriend[friend.other.id] ?? 0;
+              const selected = selectedFriendId === friend.other.id;
+              return (
+                <Button
+                  key={friend.friendship_id}
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setSelectedFriendId(friend.other.id)}
+                  className={`h-10 min-w-32 justify-start px-3 font-mono lg:w-full ${selected ? "bg-accent text-accent-foreground" : "text-muted-foreground"}`}
+                >
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-secondary text-[11px] font-semibold uppercase text-secondary-foreground">
+                    {friend.other.handle.slice(0, 2)}
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-left">@{friend.other.handle}</span>
+                  {count > 0 && (
+                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                      {count}
+                    </span>
+                  )}
+                </Button>
+              );
+            })}
+          </div>
+        </aside>
+
+        <section className="min-w-0">
+      <div className="mb-6 flex gap-1 rounded-md border border-border bg-card p-1 text-sm">
+        <Button
+          type="button"
+          variant="ghost"
           onClick={() => setTab("encrypt")}
-          className={`flex-1 flex items-center justify-center gap-2 rounded-sm px-3 py-2 ${tab === "encrypt" ? "bg-accent" : ""}`}
+          className={`flex-1 ${tab === "encrypt" ? "bg-accent" : ""}`}
         >
           <Lock className="h-4 w-4" /> {t("app_encrypt")}
-        </button>
-        <button
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
           onClick={() => setTab("decrypt")}
-          className={`flex-1 flex items-center justify-center gap-2 rounded-sm px-3 py-2 ${tab === "decrypt" ? "bg-accent" : ""}`}
+          className={`flex-1 ${tab === "decrypt" ? "bg-accent" : ""}`}
         >
           <Unlock className="h-4 w-4" /> {t("app_decrypt")}
-        </button>
+        </Button>
       </div>
+
+      {activity.messages.length > 0 && (
+        <div className="mb-5 border-l-2 border-primary bg-card px-4 py-3">
+          <div className="mb-2 flex items-center gap-2 text-sm font-medium">
+            <BellRing className="h-4 w-4 text-primary" /> {t("activity_title")}
+          </div>
+          <div className="space-y-1">
+            {activity.messages.map((item) => (
+              <div key={item.id} className="flex items-center gap-2 text-sm">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => {
+                    setSelectedFriendId(item.sender_id);
+                    setTab("decrypt");
+                  }}
+                  className="h-auto min-w-0 flex-1 justify-start truncate px-0 py-1 text-left text-muted-foreground hover:bg-transparent hover:text-foreground"
+                >
+                  {t("activity_key_waiting", { handle: item.handle })}
+                </Button>
+                <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => dismiss(item.id)} aria-label={t("activity_dismiss")} title={t("activity_dismiss")}>
+                  <X />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {friendsQ.isLoading ? (
         <div className="text-sm text-muted-foreground">{t("app_loading_friends")}</div>
@@ -64,17 +153,19 @@ function Workspace() {
           {t("app_no_friends")}
         </div>
       ) : tab === "encrypt" ? (
-        <EncryptPanel friends={accepted} />
+        <EncryptPanel friends={accepted} selectedFriendId={selectedFriendId} />
       ) : (
-        <DecryptPanel friends={accepted} />
+        <DecryptPanel friends={accepted} selectedFriendId={selectedFriendId} onActivityConsumed={activity.refresh} />
       )}
 
       <FieldStyles />
+        </section>
+      </div>
     </main>
   );
 }
 
-function EncryptPanel({ friends }: { friends: Friend[] }) {
+function EncryptPanel({ friends, selectedFriendId }: { friends: Friend[]; selectedFriendId: string }) {
   const { t } = useTranslation();
   const [recipientId, setRecipientId] = useState(friends[0]?.other.id ?? "");
   const [text, setText] = useState("");
@@ -89,6 +180,9 @@ function EncryptPanel({ friends }: { friends: Friend[] }) {
   useEffect(() => {
     if (!recipientId && friends[0]) setRecipientId(friends[0].other.id);
   }, [friends, recipientId]);
+  useEffect(() => {
+    if (selectedFriendId) setRecipientId(selectedFriendId);
+  }, [selectedFriendId]);
 
   async function onEncrypt() {
     setError(null);
@@ -165,13 +259,12 @@ function EncryptPanel({ friends }: { friends: Friend[] }) {
           placeholder={t("app_message_ph")}
         />
       </Field>
-      <button
+      <Button
         onClick={onEncrypt}
         disabled={busy}
-        className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
       >
         {busy ? t("app_encrypting") : t("app_encrypt_btn")}
-      </button>
+      </Button>
 
       {error && (
         <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm">
@@ -183,13 +276,16 @@ function EncryptPanel({ friends }: { friends: Friend[] }) {
         <div className="rounded-md border border-border bg-card p-4">
           <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
             <span>{t("app_ciphertext")}</span>
-            <button
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
               onClick={copyOut}
-              className="flex items-center gap-1 rounded-md border border-border px-2 py-1 hover:bg-accent"
+              className="h-7 gap-1 border border-border px-2"
             >
               {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
               {copied ? t("app_copied") : t("app_copy")}
-            </button>
+            </Button>
           </div>
           <div className="max-h-60 overflow-auto font-mono text-xs break-all">
             {output}
@@ -200,7 +296,7 @@ function EncryptPanel({ friends }: { friends: Friend[] }) {
   );
 }
 
-function DecryptPanel({ friends }: { friends: Friend[] }) {
+function DecryptPanel({ friends, selectedFriendId, onActivityConsumed }: { friends: Friend[]; selectedFriendId: string; onActivityConsumed: () => Promise<void> }) {
   const { t } = useTranslation();
   const [senderId, setSenderId] = useState(friends[0]?.other.id ?? "");
   const [blob, setBlob] = useState("");
@@ -216,6 +312,9 @@ function DecryptPanel({ friends }: { friends: Friend[] }) {
   useEffect(() => {
     if (!senderId && friends[0]) setSenderId(friends[0].other.id);
   }, [friends, senderId]);
+  useEffect(() => {
+    if (selectedFriendId) setSenderId(selectedFriendId);
+  }, [selectedFriendId]);
 
   async function onDecrypt() {
     setError(null);
@@ -244,6 +343,7 @@ function DecryptPanel({ friends }: { friends: Friend[] }) {
       const raw = await unwrapRawKey(key.wrapped_key, priv);
       setOutput(await decryptWithRawKey(parsed, raw));
       setFromArchive(false);
+      await onActivityConsumed();
 
       try {
         const me = await myProfileFn();
@@ -291,13 +391,12 @@ function DecryptPanel({ friends }: { friends: Friend[] }) {
           placeholder={t("app_ciphertext_ph")}
         />
       </Field>
-      <button
+      <Button
         onClick={onDecrypt}
         disabled={busy}
-        className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
       >
         {busy ? t("app_decrypting") : t("app_decrypt_btn")}
-      </button>
+      </Button>
 
       {error && (
         <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm">

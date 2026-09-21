@@ -27,6 +27,8 @@ export const Route = createFileRoute("/confirmed")({
         property: "og:description",
         content: "Your Right2Privacy email address is confirmed.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ConfirmedPage,

@@ -1,10 +1,14 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { translations } from "./translations";
+import { activityTranslations } from "./activity-translations";
 import { SUPPORTED_CODES } from "./languages";
 
 const resources = Object.fromEntries(
-  Object.entries(translations).map(([code, dict]) => [code, { translation: dict }]),
+  Object.entries(translations).map(([code, dict]) => [
+    code,
+    { translation: { ...dict, ...(activityTranslations[code] ?? {}) } },
+  ]),
 );
 
 if (!i18n.isInitialized) {

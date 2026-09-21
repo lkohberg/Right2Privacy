@@ -14,6 +14,10 @@ export const Route = createFileRoute("/_authenticated/settings")({
     meta: [
       { title: "Settings — Right2Privacy" },
       { name: "description", content: "Your Right2Privacy account." },
+      { property: "og:title", content: "Settings — Right2Privacy" },
+      { property: "og:description", content: "Your Right2Privacy account." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: SettingsPage,
