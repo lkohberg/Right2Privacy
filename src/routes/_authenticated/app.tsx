@@ -197,7 +197,7 @@ function Workspace() {
               role="tabpanel"
               aria-hidden={tab !== "decrypt"}
               hidden={tab !== "decrypt"}
-              className="animate-message-roll-up motion-reduce:animate-none"
+              className="animate-message-slide-from-right motion-reduce:animate-none lg:animate-message-roll-up"
             >
               <DecryptPanel selectedFriendId={selectedFriendId} onActivityConsumed={activity.refresh} />
             </div>
