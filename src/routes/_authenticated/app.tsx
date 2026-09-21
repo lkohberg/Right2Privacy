@@ -13,6 +13,7 @@ import { ArrowLeft, BellRing, Check, ChevronRight, Copy, Lock, MessageCircle, Un
 import { Button } from "@/components/ui/button";
 import { useActivity } from "@/components/activity-provider";
 import { dismissMessageReminder } from "@/lib/activity.functions";
+import { NewsTicker } from "@/components/news-ticker";
 
 export const Route = createFileRoute("/_authenticated/app")({
   head: () => ({
@@ -255,6 +256,9 @@ function Workspace() {
 
       <FieldStyles />
       </div>
+      </div>
+      <div className="hidden lg:block">
+        <NewsTicker />
       </div>
         </section>
       </div>
