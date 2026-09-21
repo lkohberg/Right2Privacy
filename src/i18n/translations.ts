@@ -11,6 +11,7 @@ export const translations: Record<string, Dict> = {
     nav_settings: "Settings",
     nav_signout: "Sign out",
     nav_watchlist: "Watchlist",
+    app_clear: 'Clear', app_clear_notifications: 'Clear pending notifications for this contact', app_notifications_cleared: 'Notifications cleared.',
 
     auth_signin: "Sign in",
     auth_signup: "Sign up",
@@ -118,6 +119,7 @@ export const translations: Record<string, Dict> = {
   bg: {
     brand_tagline: "Поверителността е човешко право.",
     nav_messages: "Контакти", nav_friends: "Приятели", nav_settings: "Настройки", nav_signout: "Изход", nav_watchlist: "Списък за наблюдение",
+    app_clear: 'Изчисти', app_clear_notifications: 'Изчистване на чакащите известия за този контакт', app_notifications_cleared: 'Известията са изчистени.',
     auth_signin: "Вход", auth_signup: "Регистрация", auth_create_account: "Създайте акаунт", auth_create_btn: "Създай акаунт",
     auth_email: "Имейл", auth_password: "Парола", auth_handle: "Потребителско име", auth_handle_ph: "alice_",
     auth_handle_hint: "Другите ще ви добавят по това име.",
@@ -160,6 +162,7 @@ export const translations: Record<string, Dict> = {
   hr: {
     brand_tagline: "Privatnost je ljudsko pravo.",
     nav_messages: "Kontakti", nav_friends: "Prijatelji", nav_settings: "Postavke", nav_signout: "Odjava", nav_watchlist: "Popis praćenja",
+    app_clear: 'Očisti', app_clear_notifications: 'Očisti obavijesti na čekanju za ovaj kontakt', app_notifications_cleared: 'Obavijesti su očišćene.',
     auth_signin: "Prijava", auth_signup: "Registracija", auth_create_account: "Otvorite račun", auth_create_btn: "Otvori račun",
     auth_email: "E-pošta", auth_password: "Lozinka", auth_handle: "Korisničko ime", auth_handle_ph: "alice_",
     auth_handle_hint: "Drugi će vas dodati po ovom imenu.",
@@ -202,6 +205,7 @@ export const translations: Record<string, Dict> = {
   cs: {
     brand_tagline: "Soukromí je lidské právo.",
     nav_messages: "Kontakty", nav_friends: "Přátelé", nav_settings: "Nastavení", nav_signout: "Odhlásit", nav_watchlist: "Seznam sledovaných",
+    app_clear: 'Vymazat', app_clear_notifications: 'Vymazat čekající oznámení pro tento kontakt', app_notifications_cleared: 'Oznámení byla vymazána.',
     auth_signin: "Přihlásit", auth_signup: "Registrace", auth_create_account: "Vytvořit účet", auth_create_btn: "Vytvořit účet",
     auth_email: "E-mail", auth_password: "Heslo", auth_handle: "Uživatelské jméno", auth_handle_ph: "alice_",
     auth_handle_hint: "Ostatní vás přidají podle tohoto jména.",
@@ -244,6 +248,7 @@ export const translations: Record<string, Dict> = {
   da: {
     brand_tagline: "Privatliv er en menneskeret.",
     nav_messages: "Kontakter", nav_friends: "Venner", nav_settings: "Indstillinger", nav_signout: "Log ud", nav_watchlist: "Overvågningsliste",
+    app_clear: 'Ryd', app_clear_notifications: 'Ryd ventende notifikationer for denne kontakt', app_notifications_cleared: 'Notifikationer ryddet.',
     auth_signin: "Log ind", auth_signup: "Opret konto", auth_create_account: "Opret din konto", auth_create_btn: "Opret konto",
     auth_email: "E-mail", auth_password: "Adgangskode", auth_handle: "Brugernavn", auth_handle_ph: "alice_",
     auth_handle_hint: "Andre tilføjer dig via dette navn.",
@@ -286,6 +291,7 @@ export const translations: Record<string, Dict> = {
   nl: {
     brand_tagline: "Privacy is een mensenrecht.",
     nav_messages: "Contacten", nav_friends: "Vrienden", nav_settings: "Instellingen", nav_signout: "Uitloggen", nav_watchlist: "Volglijst",
+    app_clear: 'Wissen', app_clear_notifications: 'Wis openstaande meldingen voor dit contact', app_notifications_cleared: 'Meldingen gewist.',
     auth_signin: "Inloggen", auth_signup: "Registreren", auth_create_account: "Maak je account", auth_create_btn: "Account aanmaken",
     auth_email: "E-mail", auth_password: "Wachtwoord", auth_handle: "Gebruikersnaam", auth_handle_ph: "alice_",
     auth_handle_hint: "Anderen voegen je toe via deze naam.",
@@ -328,6 +334,7 @@ export const translations: Record<string, Dict> = {
   et: {
     brand_tagline: "Privaatsus on inimõigus.",
     nav_messages: "Kontaktid", nav_friends: "Sõbrad", nav_settings: "Sätted", nav_signout: "Logi välja", nav_watchlist: "Jälgimisloend",
+    app_clear: 'Tühjenda', app_clear_notifications: 'Tühjenda selle kontakti ootel teavitused', app_notifications_cleared: 'Teavitused on tühjendatud.',
     auth_signin: "Logi sisse", auth_signup: "Registreeru", auth_create_account: "Loo konto", auth_create_btn: "Loo konto",
     auth_email: "E-post", auth_password: "Parool", auth_handle: "Kasutajanimi", auth_handle_ph: "alice_",
     auth_handle_hint: "Teised lisavad su selle nime järgi.",
@@ -370,6 +377,7 @@ export const translations: Record<string, Dict> = {
   fi: {
     brand_tagline: "Yksityisyys on ihmisoikeus.",
     nav_messages: "Yhteystiedot", nav_friends: "Ystävät", nav_settings: "Asetukset", nav_signout: "Kirjaudu ulos", nav_watchlist: "Valvontalista",
+    app_clear: 'Tyhjennä', app_clear_notifications: 'Tyhjennä tämän yhteystiedon odottavat ilmoitukset', app_notifications_cleared: 'Ilmoitukset tyhjennetty.',
     auth_signin: "Kirjaudu", auth_signup: "Rekisteröidy", auth_create_account: "Luo tili", auth_create_btn: "Luo tili",
     auth_email: "Sähköposti", auth_password: "Salasana", auth_handle: "Käyttäjätunnus", auth_handle_ph: "alice_",
     auth_handle_hint: "Muut lisäävät sinut tällä tunnuksella.",
@@ -412,6 +420,7 @@ export const translations: Record<string, Dict> = {
   fr: {
     brand_tagline: "La vie privée est un droit humain.",
     nav_messages: "Contacts", nav_friends: "Amis", nav_settings: "Paramètres", nav_signout: "Déconnexion", nav_watchlist: "Liste de surveillance",
+    app_clear: 'Effacer', app_clear_notifications: 'Effacer les notifications en attente de ce contact', app_notifications_cleared: 'Notifications effacées.',
     auth_signin: "Se connecter", auth_signup: "S'inscrire", auth_create_account: "Créez votre compte", auth_create_btn: "Créer un compte",
     auth_email: "E-mail", auth_password: "Mot de passe", auth_handle: "Identifiant", auth_handle_ph: "alice_",
     auth_handle_hint: "Les autres vous ajouteront avec cet identifiant.",
@@ -454,6 +463,7 @@ export const translations: Record<string, Dict> = {
   de: {
     brand_tagline: "Privatsphäre ist ein Menschenrecht.",
     nav_messages: "Kontakte", nav_friends: "Freunde", nav_settings: "Einstellungen", nav_signout: "Abmelden", nav_watchlist: "Überwachungsliste",
+    app_clear: 'Leeren', app_clear_notifications: 'Ausstehende Benachrichtigungen dieses Kontakts löschen', app_notifications_cleared: 'Benachrichtigungen gelöscht.',
     auth_signin: "Anmelden", auth_signup: "Registrieren", auth_create_account: "Konto erstellen", auth_create_btn: "Konto erstellen",
     auth_email: "E-Mail", auth_password: "Passwort", auth_handle: "Benutzername", auth_handle_ph: "alice_",
     auth_handle_hint: "Andere fügen dich über diesen Namen hinzu.",
@@ -496,6 +506,7 @@ export const translations: Record<string, Dict> = {
   el: {
     brand_tagline: "Η ιδιωτικότητα είναι ανθρώπινο δικαίωμα.",
     nav_messages: "Επαφές", nav_friends: "Φίλοι", nav_settings: "Ρυθμίσεις", nav_signout: "Αποσύνδεση", nav_watchlist: "Λίστα παρακολούθησης",
+    app_clear: 'Εκκαθάριση', app_clear_notifications: 'Εκκαθάριση εκκρεμών ειδοποιήσεων για αυτή την επαφή', app_notifications_cleared: 'Οι ειδοποιήσεις διαγράφηκαν.',
     auth_signin: "Σύνδεση", auth_signup: "Εγγραφή", auth_create_account: "Δημιουργία λογαριασμού", auth_create_btn: "Δημιουργία λογαριασμού",
     auth_email: "Email", auth_password: "Κωδικός", auth_handle: "Όνομα χρήστη", auth_handle_ph: "alice_",
     auth_handle_hint: "Οι άλλοι θα σας προσθέσουν με αυτό το όνομα.",
@@ -538,6 +549,7 @@ export const translations: Record<string, Dict> = {
   hu: {
     brand_tagline: "A magánélet emberi jog.",
     nav_messages: "Kapcsolatok", nav_friends: "Barátok", nav_settings: "Beállítások", nav_signout: "Kijelentkezés", nav_watchlist: "Figyelőlista",
+    app_clear: 'Törlés', app_clear_notifications: 'A kapcsolat függő értesítéseinek törlése', app_notifications_cleared: 'Értesítések törölve.',
     auth_signin: "Bejelentkezés", auth_signup: "Regisztráció", auth_create_account: "Fiók létrehozása", auth_create_btn: "Fiók létrehozása",
     auth_email: "E-mail", auth_password: "Jelszó", auth_handle: "Felhasználónév", auth_handle_ph: "alice_",
     auth_handle_hint: "Mások ezen a néven adnak hozzá.",
@@ -580,6 +592,7 @@ export const translations: Record<string, Dict> = {
   ga: {
     brand_tagline: "Is ceart daonna í an phríobháideacht.",
     nav_messages: "Teagmhálaithe", nav_friends: "Cairde", nav_settings: "Socruithe", nav_signout: "Logáil amach", nav_watchlist: "Liosta faire",
+    app_clear: 'Glan', app_clear_notifications: 'Glan fógraí ar feitheamh don teagmhálaí seo', app_notifications_cleared: 'Fógraí glanta.',
     auth_signin: "Logáil isteach", auth_signup: "Cláraigh", auth_create_account: "Cruthaigh cuntas", auth_create_btn: "Cruthaigh cuntas",
     auth_email: "Ríomhphost", auth_password: "Pasfhocal", auth_handle: "Ainm úsáideora", auth_handle_ph: "alice_",
     auth_handle_hint: "Cuirfidh daoine eile leat tríd an ainm seo.",
@@ -622,6 +635,7 @@ export const translations: Record<string, Dict> = {
   it: {
     brand_tagline: "La privacy è un diritto umano.",
     nav_messages: "Contatti", nav_friends: "Amici", nav_settings: "Impostazioni", nav_signout: "Esci", nav_watchlist: "Lista di sorveglianza",
+    app_clear: 'Cancella', app_clear_notifications: 'Cancella le notifiche in sospeso per questo contatto', app_notifications_cleared: 'Notifiche cancellate.',
     auth_signin: "Accedi", auth_signup: "Registrati", auth_create_account: "Crea il tuo account", auth_create_btn: "Crea account",
     auth_email: "Email", auth_password: "Password", auth_handle: "Nome utente", auth_handle_ph: "alice_",
     auth_handle_hint: "Gli altri ti aggiungeranno con questo nome.",
@@ -664,6 +678,7 @@ export const translations: Record<string, Dict> = {
   lv: {
     brand_tagline: "Privātums ir cilvēktiesības.",
     nav_messages: "Kontakti", nav_friends: "Draugi", nav_settings: "Iestatījumi", nav_signout: "Iziet", nav_watchlist: "Uzraudzības saraksts",
+    app_clear: 'Notīrīt', app_clear_notifications: 'Notīrīt šīs kontaktpersonas neizskatītos paziņojumus', app_notifications_cleared: 'Paziņojumi notīrīti.',
     auth_signin: "Pieteikties", auth_signup: "Reģistrēties", auth_create_account: "Izveidot kontu", auth_create_btn: "Izveidot kontu",
     auth_email: "E-pasts", auth_password: "Parole", auth_handle: "Lietotājvārds", auth_handle_ph: "alice_",
     auth_handle_hint: "Citi tevi pievienos pēc šī vārda.",
@@ -706,6 +721,7 @@ export const translations: Record<string, Dict> = {
   lt: {
     brand_tagline: "Privatumas yra žmogaus teisė.",
     nav_messages: "Kontaktai", nav_friends: "Draugai", nav_settings: "Nustatymai", nav_signout: "Atsijungti", nav_watchlist: "Stebėjimo sąrašas",
+    app_clear: 'Išvalyti', app_clear_notifications: 'Išvalyti laukiančius šio kontakto pranešimus', app_notifications_cleared: 'Pranešimai išvalyti.',
     auth_signin: "Prisijungti", auth_signup: "Registruotis", auth_create_account: "Sukurti paskyrą", auth_create_btn: "Sukurti paskyrą",
     auth_email: "El. paštas", auth_password: "Slaptažodis", auth_handle: "Vartotojo vardas", auth_handle_ph: "alice_",
     auth_handle_hint: "Kiti pridės jus pagal šį vardą.",
@@ -748,6 +764,7 @@ export const translations: Record<string, Dict> = {
   mt: {
     brand_tagline: "Il-privatezza hija dritt tal-bniedem.",
     nav_messages: "Kuntatti", nav_friends: "Ħbieb", nav_settings: "Settings", nav_signout: "Oħroġ", nav_watchlist: "Lista ta' sorveljanza",
+    app_clear: 'Neħħi', app_clear_notifications: 'Neħħi n-notifiki pendenti għal dan il-kuntatt', app_notifications_cleared: 'In-notifiki tneħħew.',
     auth_signin: "Idħol", auth_signup: "Irreġistra", auth_create_account: "Oħloq il-kont tiegħek", auth_create_btn: "Oħloq kont",
     auth_email: "Email", auth_password: "Password", auth_handle: "Isem tal-utent", auth_handle_ph: "alice_",
     auth_handle_hint: "Oħrajn iżiduk permezz ta' dan l-isem.",
@@ -790,6 +807,7 @@ export const translations: Record<string, Dict> = {
   pl: {
     brand_tagline: "Prywatność to prawo człowieka.",
     nav_messages: "Kontakty", nav_friends: "Znajomi", nav_settings: "Ustawienia", nav_signout: "Wyloguj", nav_watchlist: "Lista obserwowanych",
+    app_clear: 'Wyczyść', app_clear_notifications: 'Wyczyść oczekujące powiadomienia tego kontaktu', app_notifications_cleared: 'Powiadomienia wyczyszczone.',
     auth_signin: "Zaloguj się", auth_signup: "Zarejestruj", auth_create_account: "Utwórz konto", auth_create_btn: "Utwórz konto",
     auth_email: "E-mail", auth_password: "Hasło", auth_handle: "Nazwa użytkownika", auth_handle_ph: "alice_",
     auth_handle_hint: "Inni dodadzą Cię po tej nazwie.",
@@ -832,6 +850,7 @@ export const translations: Record<string, Dict> = {
   pt: {
     brand_tagline: "A privacidade é um direito humano.",
     nav_messages: "Contactos", nav_friends: "Amigos", nav_settings: "Definições", nav_signout: "Terminar sessão", nav_watchlist: "Lista de vigilância",
+    app_clear: 'Limpar', app_clear_notifications: 'Limpar notificações pendentes deste contacto', app_notifications_cleared: 'Notificações limpas.',
     auth_signin: "Entrar", auth_signup: "Registar", auth_create_account: "Crie a sua conta", auth_create_btn: "Criar conta",
     auth_email: "Email", auth_password: "Palavra-passe", auth_handle: "Utilizador", auth_handle_ph: "alice_",
     auth_handle_hint: "Os outros adicionam-no por este nome.",
@@ -874,6 +893,7 @@ export const translations: Record<string, Dict> = {
   ro: {
     brand_tagline: "Intimitatea este un drept al omului.",
     nav_messages: "Contacte", nav_friends: "Prieteni", nav_settings: "Setări", nav_signout: "Deconectare", nav_watchlist: "Lista de supraveghere",
+    app_clear: 'Șterge', app_clear_notifications: 'Șterge notificările în așteptare pentru acest contact', app_notifications_cleared: 'Notificări șterse.',
     auth_signin: "Autentificare", auth_signup: "Înregistrare", auth_create_account: "Creează cont", auth_create_btn: "Creează cont",
     auth_email: "Email", auth_password: "Parolă", auth_handle: "Nume de utilizator", auth_handle_ph: "alice_",
     auth_handle_hint: "Alții te vor adăuga după acest nume.",
@@ -916,6 +936,7 @@ export const translations: Record<string, Dict> = {
   sk: {
     brand_tagline: "Súkromie je ľudské právo.",
     nav_messages: "Kontakty", nav_friends: "Priatelia", nav_settings: "Nastavenia", nav_signout: "Odhlásiť", nav_watchlist: "Zoznam sledovaných",
+    app_clear: 'Vymazať', app_clear_notifications: 'Vymazať čakajúce upozornenia pre tento kontakt', app_notifications_cleared: 'Upozornenia boli vymazané.',
     auth_signin: "Prihlásiť sa", auth_signup: "Registrácia", auth_create_account: "Vytvoriť účet", auth_create_btn: "Vytvoriť účet",
     auth_email: "E-mail", auth_password: "Heslo", auth_handle: "Používateľské meno", auth_handle_ph: "alice_",
     auth_handle_hint: "Ostatní vás pridajú podľa tohto mena.",
@@ -958,6 +979,7 @@ export const translations: Record<string, Dict> = {
   sl: {
     brand_tagline: "Zasebnost je človekova pravica.",
     nav_messages: "Stiki", nav_friends: "Prijatelji", nav_settings: "Nastavitve", nav_signout: "Odjava", nav_watchlist: "Seznam nadzora",
+    app_clear: 'Počisti', app_clear_notifications: 'Počisti čakajoča obvestila za ta stik', app_notifications_cleared: 'Obvestila so počiščena.',
     auth_signin: "Prijava", auth_signup: "Registracija", auth_create_account: "Ustvarite račun", auth_create_btn: "Ustvari račun",
     auth_email: "E-pošta", auth_password: "Geslo", auth_handle: "Uporabniško ime", auth_handle_ph: "alice_",
     auth_handle_hint: "Drugi vas bodo dodali s tem imenom.",
@@ -1000,6 +1022,7 @@ export const translations: Record<string, Dict> = {
   es: {
     brand_tagline: "La privacidad es un derecho humano.",
     nav_messages: "Contactos", nav_friends: "Amigos", nav_settings: "Ajustes", nav_signout: "Cerrar sesión", nav_watchlist: "Lista de vigilancia",
+    app_clear: 'Borrar', app_clear_notifications: 'Borrar las notificaciones pendientes de este contacto', app_notifications_cleared: 'Notificaciones borradas.',
     auth_signin: "Iniciar sesión", auth_signup: "Registrarse", auth_create_account: "Crea tu cuenta", auth_create_btn: "Crear cuenta",
     auth_email: "Correo", auth_password: "Contraseña", auth_handle: "Usuario", auth_handle_ph: "alice_",
     auth_handle_hint: "Los demás te añadirán con este nombre.",
@@ -1042,6 +1065,7 @@ export const translations: Record<string, Dict> = {
   sv: {
     brand_tagline: "Integritet är en mänsklig rättighet.",
     nav_messages: "Kontakter", nav_friends: "Vänner", nav_settings: "Inställningar", nav_signout: "Logga ut", nav_watchlist: "Övervakningslista",
+    app_clear: 'Rensa', app_clear_notifications: 'Rensa väntande aviseringar för den här kontakten', app_notifications_cleared: 'Aviseringar rensade.',
     auth_signin: "Logga in", auth_signup: "Registrera", auth_create_account: "Skapa konto", auth_create_btn: "Skapa konto",
     auth_email: "E-post", auth_password: "Lösenord", auth_handle: "Användarnamn", auth_handle_ph: "alice_",
     auth_handle_hint: "Andra lägger till dig med det här namnet.",
