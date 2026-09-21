@@ -1,5 +1,5 @@
 # Roadmap
 
-- [ ] Replace the Encrypt/Decrypt control with a vertical slider.
-- [ ] Animate the active message panel rolling up and down.
-- [ ] Verify the interaction on desktop, tablet, and phone.
+- [x] Replace the Encrypt/Decrypt control with a vertical slider.
+- [x] Animate the active message panel rolling up and down.
+- [x] Verify the interaction on desktop, tablet, and phone.
