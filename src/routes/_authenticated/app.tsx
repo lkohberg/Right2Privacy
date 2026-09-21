@@ -183,8 +183,8 @@ function Workspace() {
           {t("app_no_friends")}
         </div>
       ) : (
-        <div className="grid grid-cols-[minmax(0,1fr)_4.75rem] items-start gap-4 sm:grid-cols-[minmax(0,1fr)_5.25rem] lg:gap-6">
-          <div className="col-start-1 min-w-0 overflow-hidden">
+        <div className="grid grid-cols-2 grid-rows-[minmax(0,1fr)_auto] items-start gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_5.25rem] lg:grid-rows-1 lg:gap-6">
+          <div className="col-span-2 min-w-0 overflow-hidden lg:col-span-1 lg:col-start-1 lg:row-start-1">
             <div
               role="tabpanel"
               aria-hidden={tab !== "encrypt"}
@@ -206,22 +206,25 @@ function Workspace() {
           <div
             role="tablist"
             aria-label={`${t("app_encrypt")} / ${t("app_decrypt")}`}
-            aria-orientation="vertical"
             onKeyDown={(event) => {
-              if (event.key === "ArrowUp") {
+              if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
                 event.preventDefault();
                 setTab("encrypt");
               }
-              if (event.key === "ArrowDown") {
+              if (event.key === "ArrowDown" || event.key === "ArrowRight") {
                 event.preventDefault();
                 setTab("decrypt");
               }
             }}
-            className="mode-barrel col-start-2 row-start-1 relative sticky top-0 grid grid-rows-2 overflow-hidden rounded-xl border border-border bg-card p-1 shadow-lg"
+            className="mode-barrel relative grid grid-cols-2 grid-rows-1 overflow-hidden rounded-xl border border-border bg-card p-1 shadow-lg lg:col-start-2 lg:row-start-1 lg:sticky lg:top-0 lg:grid-cols-1 lg:grid-rows-2"
           >
             <span
               aria-hidden="true"
-              className={`mode-barrel-indicator pointer-events-none absolute inset-x-1 top-1 h-[calc(50%-0.375rem)] rounded-lg border border-primary/20 bg-accent shadow-sm motion-reduce:transition-none ${tab === "decrypt" ? "mode-barrel-indicator-down" : "mode-barrel-indicator-up"}`}
+              className={`mode-barrel-indicator pointer-events-none absolute inset-y-1 left-1 w-[calc(50%-0.375rem)] rounded-lg border border-primary/20 bg-accent shadow-sm motion-reduce:transition-none lg:hidden ${tab === "decrypt" ? "mode-barrel-indicator-right" : "mode-barrel-indicator-left"}`}
+            />
+            <span
+              aria-hidden="true"
+              className={`mode-barrel-indicator pointer-events-none absolute inset-x-1 top-1 hidden h-[calc(50%-0.375rem)] rounded-lg border border-primary/20 bg-accent shadow-sm motion-reduce:transition-none lg:block ${tab === "decrypt" ? "mode-barrel-indicator-down" : "mode-barrel-indicator-up"}`}
             />
             <Button
               type="button"
@@ -229,7 +232,7 @@ function Workspace() {
               aria-selected={tab === "encrypt"}
               variant="ghost"
               onClick={() => setTab("encrypt")}
-              className={`mode-barrel-option relative z-10 h-20 min-w-0 flex-col gap-1 rounded-lg px-0.5 text-[11px] transition-all duration-300 hover:bg-transparent sm:h-24 ${tab === "encrypt" ? "mode-barrel-option-active text-primary" : "mode-barrel-option-away text-muted-foreground"}`}
+              className={`mode-barrel-option relative z-10 h-16 min-w-0 flex-row gap-2 rounded-lg px-2 text-xs transition-all duration-300 hover:bg-transparent sm:text-sm lg:h-24 lg:flex-col lg:gap-1 lg:px-0.5 lg:text-[11px] ${tab === "encrypt" ? "mode-barrel-option-active text-primary" : "mode-barrel-option-away text-muted-foreground"}`}
             >
               <Lock className="h-4 w-4 shrink-0" />
               <span className="max-w-full truncate">{t("app_encrypt")}</span>
@@ -240,7 +243,7 @@ function Workspace() {
               aria-selected={tab === "decrypt"}
               variant="ghost"
               onClick={() => setTab("decrypt")}
-              className={`mode-barrel-option relative z-10 h-20 min-w-0 flex-col gap-1 rounded-lg px-0.5 text-[11px] transition-all duration-300 hover:bg-transparent sm:h-24 ${tab === "decrypt" ? "mode-barrel-option-active text-primary" : "mode-barrel-option-away text-muted-foreground"}`}
+              className={`mode-barrel-option relative z-10 h-16 min-w-0 flex-row gap-2 rounded-lg px-2 text-xs transition-all duration-300 hover:bg-transparent sm:text-sm lg:h-24 lg:flex-col lg:gap-1 lg:px-0.5 lg:text-[11px] ${tab === "decrypt" ? "mode-barrel-option-active text-primary" : "mode-barrel-option-away text-muted-foreground"}`}
             >
               <Unlock className="h-4 w-4 shrink-0" />
               <span className="max-w-full truncate">{t("app_decrypt")}</span>
