@@ -75,7 +75,7 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
   const requestCount = friendRequests.length;
 
   return (
-    <div className="min-h-screen bg-background pb-[calc(4.75rem+env(safe-area-inset-bottom))] text-foreground sm:pb-0">
+    <div className="min-h-screen bg-background pb-[calc(5.75rem+env(safe-area-inset-bottom))] text-foreground sm:pb-0">
       <header className="border-b border-border">
         <div className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:flex sm:justify-between sm:px-6">
           <Link to="/app" className="flex min-w-0 items-center gap-2 text-sm font-mono">
@@ -112,8 +112,8 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
         </div>
       </header>
       <Outlet />
-      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur sm:hidden" aria-label="Mobile navigation">
-        <div className="grid h-[4.75rem] grid-cols-5 items-stretch">
+      <nav className="fixed inset-x-0 bottom-0 z-50 px-3 pb-[calc(0.5rem+env(safe-area-inset-bottom))] sm:hidden" aria-label="Mobile navigation">
+        <div className="grid h-[4.5rem] grid-cols-5 items-stretch rounded-[1.35rem] border border-border bg-card/95 p-1 shadow-2xl backdrop-blur-xl">
           <MobileNavLink to="/app" label={t("nav_messages")} badge={activityCount} icon={<Lock />} />
           <MobileNavLink to="/friends" label={t("nav_friends")} badge={requestCount} icon={<Users />} />
           <MobileNavLink to="/settings" label={t("nav_settings")} icon={<Settings />} />
@@ -123,7 +123,7 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
             onClick={enableBrowserAlerts}
             title={browserAlertsEnabled ? t("notifications_enabled") : t("notifications_enable")}
             aria-label={browserAlertsEnabled ? t("notifications_enabled") : t("notifications_enable")}
-            className="h-full min-w-0 rounded-none px-1 text-muted-foreground"
+            className={`h-full min-w-0 rounded-2xl px-1 text-muted-foreground ${browserAlertsEnabled ? "bg-accent text-primary" : ""}`}
           >
             {browserAlertsEnabled ? <BellRing className="h-5 w-5" /> : <Bell className="h-5 w-5" />}
           </Button>
@@ -133,7 +133,7 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
             onClick={onSignOut}
             title={t("nav_signout")}
             aria-label={t("nav_signout")}
-            className="h-full min-w-0 rounded-none px-1 text-muted-foreground"
+            className="h-full min-w-0 rounded-2xl px-1 text-muted-foreground"
           >
             <LogOut className="h-5 w-5" />
           </Button>
@@ -158,8 +158,8 @@ function MobileNavLink({
     <Link
       to={to}
       aria-label={label}
-      className="relative flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] text-muted-foreground"
-      activeProps={{ className: "relative flex min-w-0 flex-col items-center justify-center gap-1 bg-accent px-1 text-[10px] text-foreground" }}
+      className="relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 text-[10px] font-medium text-muted-foreground transition-colors"
+      activeProps={{ className: "relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-2xl bg-accent px-1 text-[10px] font-semibold text-primary" }}
     >
       <span className="relative [&_svg]:h-5 [&_svg]:w-5">
         {icon}
