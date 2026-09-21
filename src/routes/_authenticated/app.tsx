@@ -9,7 +9,7 @@ import { postWrappedKey, fetchWrappedKey, archiveMessageKey, fetchArchivedKey } 
 import { encryptMessage, parseBlob, unwrapRawKey, wrapRawKeyFor, decryptWithRawKey } from "@/lib/crypto";
 import { loadPrivateKey } from "@/lib/keystore";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, BellRing, Check, ChevronRight, Copy, Lock, MessageCircle, Unlock, X } from "lucide-react";
+import { ArrowLeft, BellRing, Check, ChevronRight, ClipboardPaste, Copy, KeyRound, Lock, MessageCircle, ShieldCheck, Unlock, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useActivity } from "@/components/activity-provider";
 import { dismissMessageReminder } from "@/lib/activity.functions";
@@ -148,7 +148,11 @@ function Workspace() {
         </div>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto lg:px-8 lg:py-7">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto grid w-full max-w-7xl items-start gap-6 lg:grid-cols-[16rem_minmax(0,1fr)_16rem]">
+      <div className="hidden lg:block">
+        <ContactCard friend={selectedFriend} waitingCount={selectedFriend ? (waitingByFriend[selectedFriend.other.id] ?? 0) : 0} />
+      </div>
+      <div className="mx-auto w-full min-w-0 max-w-3xl">
       {activity.messages.length > 0 && (
         <div className="mb-5 border-l-2 border-primary bg-card px-4 py-3">
           <div className="mb-2 flex items-center gap-2 text-sm font-medium">
@@ -254,6 +258,10 @@ function Workspace() {
       )}
 
       <FieldStyles />
+      </div>
+      <div className="hidden lg:block">
+        <SecurityPanel />
+      </div>
       </div>
       </div>
         </section>
