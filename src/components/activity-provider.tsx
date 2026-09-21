@@ -143,7 +143,5 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useActivity() {
-  const value = useContext(ActivityContext);
-  if (!value) throw new Error("useActivity must be used inside ActivityProvider");
-  return value;
+  return useContext(ActivityContext) ?? fallbackActivity;
 }
