@@ -338,8 +338,9 @@ function EncryptPanel({ friends, selectedFriendId }: { friends: Friend[]; select
       <Button
         onClick={onEncrypt}
         disabled={busy}
-        className="lg:h-11 lg:px-6"
+        className="h-12 w-full gap-2 rounded-full text-sm font-semibold shadow-lg shadow-primary/20 transition-transform active:scale-[0.98] lg:h-11 lg:w-auto lg:px-7"
       >
+        <Lock className="h-4 w-4 shrink-0" />
         {busy ? t("app_encrypting") : t("app_encrypt_btn")}
       </Button>
 
