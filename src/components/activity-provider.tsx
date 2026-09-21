@@ -33,6 +33,8 @@ const ActivityContext = createContext<ActivityValue | null>(null);
 
 export function ActivityProvider({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
+  const router = useRouter();
+
   const getActivityFn = useServerFn(getActivity);
   const queryClient = useQueryClient();
   const seenRef = useRef<Set<string> | null>(null);
