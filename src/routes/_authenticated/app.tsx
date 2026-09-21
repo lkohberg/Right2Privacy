@@ -451,8 +451,9 @@ function DecryptPanel({ selectedFriendId, onActivityConsumed }: { selectedFriend
       <Button
         onClick={onDecrypt}
         disabled={busy}
-        className="lg:h-11 lg:px-6"
+        className="h-12 w-full gap-2 rounded-full text-sm font-semibold shadow-lg shadow-primary/20 transition-transform active:scale-[0.98] lg:h-11 lg:w-auto lg:px-7"
       >
+        <Unlock className="h-4 w-4 shrink-0" />
         {busy ? t("app_decrypting") : t("app_decrypt_btn")}
       </Button>
 
