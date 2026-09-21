@@ -77,14 +77,16 @@ export function NewsTicker() {
           Privacy feed
         </span>
       </div>
-      <div className="ticker-track flex min-w-0 items-center">
-        {[0, 1].map((copy) => (
-          <div key={copy} aria-hidden={copy === 1} className="flex items-center">
-            {entries.map((entry) => (
-              <Item key={`${copy}-${entry.key}`} entry={entry} />
-            ))}
-          </div>
-        ))}
+      <div className="ticker-fade min-w-0 flex-1 overflow-hidden">
+        <div className="ticker-track flex h-full items-center">
+          {[0, 1].map((copy) => (
+            <div key={copy} aria-hidden={copy === 1} className="flex items-center pr-10">
+              {entries.map((entry) => (
+                <Item key={`${copy}-${entry.key}`} entry={entry} />
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
