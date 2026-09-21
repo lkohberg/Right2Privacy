@@ -17,9 +17,9 @@ import { dismissMessageReminder } from "@/lib/activity.functions";
 export const Route = createFileRoute("/_authenticated/app")({
   head: () => ({
     meta: [
-      { title: "Messages — Right2Privacy" },
+      { title: "Contacts — Right2Privacy" },
       { name: "description", content: "Encrypt and decrypt messages." },
-      { property: "og:title", content: "Messages — Right2Privacy" },
+      { property: "og:title", content: "Contacts — Right2Privacy" },
       { property: "og:description", content: "Encrypt and decrypt messages." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
