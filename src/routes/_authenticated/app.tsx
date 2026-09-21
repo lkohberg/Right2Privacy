@@ -16,6 +16,13 @@ import { dismissMessageReminder } from "@/lib/activity.functions";
 import { NewsTicker } from "@/components/news-ticker";
 
 export const Route = createFileRoute("/_authenticated/app")({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { contact?: string; mode?: "decrypt" } => ({
+    ...(typeof search.contact === "string" ? { contact: search.contact } : {}),
+    ...(search.mode === "decrypt" ? { mode: "decrypt" as const } : {}),
+  }),
+
   head: () => ({
     meta: [
       { title: "Contacts — Right2Privacy" },
@@ -29,6 +36,7 @@ export const Route = createFileRoute("/_authenticated/app")({
   component: Workspace,
 });
 
+
 type Friend = {
   friendship_id: string;
   status: "pending" | "accepted";
@@ -37,9 +45,11 @@ type Friend = {
 };
 
 function Workspace() {
+  const search = Route.useSearch();
   const [tab, setTab] = useState<"encrypt" | "decrypt">("encrypt");
   const [selectedFriendId, setSelectedFriendId] = useState("");
   const [mobileContactOpen, setMobileContactOpen] = useState(false);
+
   const { t } = useTranslation();
   const activity = useActivity();
   const dismissReminder = useServerFn(dismissMessageReminder);
@@ -54,6 +64,16 @@ function Workspace() {
   useEffect(() => {
     if (!selectedFriendId && accepted[0]) setSelectedFriendId(accepted[0].other.id);
   }, [accepted, selectedFriendId]);
+
+  const requestedContact = search.contact;
+  const requestedMode = search.mode;
+  useEffect(() => {
+    if (!requestedContact) return;
+    setSelectedFriendId(requestedContact);
+    setTab(requestedMode === "decrypt" ? "decrypt" : "encrypt");
+    setMobileContactOpen(true);
+  }, [requestedContact, requestedMode]);
+
 
   const waitingByFriend = activity.messages.reduce<Record<string, number>>((counts, item) => {
     counts[item.sender_id] = (counts[item.sender_id] ?? 0) + 1;

@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { getActivity } from "@/lib/activity.functions";
@@ -31,6 +33,8 @@ const ActivityContext = createContext<ActivityValue | null>(null);
 
 export function ActivityProvider({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
+  const router = useRouter();
+
   const getActivityFn = useServerFn(getActivity);
   const queryClient = useQueryClient();
   const seenRef = useRef<Set<string> | null>(null);
@@ -65,11 +69,24 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
 
     for (const item of newMessages) {
       const body = t("activity_key_waiting", { handle: item.handle });
-      toast(body);
+      const open = () =>
+        router.navigate({
+          to: "/app",
+          search: { contact: item.sender_id, mode: "decrypt" as const },
+        });
+      toast(body, { action: { label: t("app_decrypt"), onClick: open } });
       if (browserAlerts && Notification.permission === "granted") {
-        new Notification("Right2Privacy", { body, tag: `message:${item.id}` });
+        const notification = new Notification("Right2Privacy", {
+          body,
+          tag: `message:${item.id}`,
+        });
+        notification.onclick = () => {
+          window.focus();
+          void open();
+        };
       }
     }
+
     for (const item of newRequests) {
       const body = t("friends_request_from", { handle: item.handle });
       toast(body);
