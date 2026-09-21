@@ -45,9 +45,11 @@ type Friend = {
 };
 
 function Workspace() {
+  const search = Route.useSearch();
   const [tab, setTab] = useState<"encrypt" | "decrypt">("encrypt");
   const [selectedFriendId, setSelectedFriendId] = useState("");
   const [mobileContactOpen, setMobileContactOpen] = useState(false);
+
   const { t } = useTranslation();
   const activity = useActivity();
   const dismissReminder = useServerFn(dismissMessageReminder);
