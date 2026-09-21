@@ -216,7 +216,7 @@ function Workspace() {
                 setTab("decrypt");
               }
             }}
-            className="mode-barrel relative grid grid-cols-2 grid-rows-1 overflow-hidden rounded-xl border border-border bg-card p-1 shadow-lg lg:col-start-2 lg:row-start-1 lg:sticky lg:top-0 lg:grid-cols-1 lg:grid-rows-2"
+            className="mode-barrel relative col-span-2 grid grid-cols-2 grid-rows-1 overflow-hidden rounded-xl border border-border bg-card p-1 shadow-lg lg:col-span-1 lg:col-start-2 lg:row-start-1 lg:sticky lg:top-0 lg:grid-cols-1 lg:grid-rows-2"
           >
             <span
               aria-hidden="true"
