@@ -198,6 +198,18 @@
   box-shadow: 0 -0.5rem 1rem color-mix(in oklab, var(--background) 30%, transparent);
 }
 
+@utility mode-barrel-indicator-left {
+  transform: translateX(0) rotateY(0deg) translateZ(0.4rem);
+  border-radius: 1.25rem 0.7rem 0.7rem 1.25rem;
+  box-shadow: 0 0.5rem 1rem color-mix(in oklab, var(--background) 30%, transparent);
+}
+
+@utility mode-barrel-indicator-right {
+  transform: translateX(calc(100% + 0.25rem)) rotateY(360deg) translateZ(0.4rem);
+  border-radius: 0.7rem 1.25rem 1.25rem 0.7rem;
+  box-shadow: 0 -0.5rem 1rem color-mix(in oklab, var(--background) 30%, transparent);
+}
+
 @utility mode-barrel-option {
   transform-style: preserve-3d;
 }
