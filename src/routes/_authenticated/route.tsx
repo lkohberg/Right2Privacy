@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect, Link, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { Bell, BellRing, Lock, MessageSquare, Users, Settings, LogOut } from "lucide-react";
+import { Bell, BellRing, Eye, Lock, MessageSquare, Users, Settings, LogOut } from "lucide-react";
 import { clearPrivateKey } from "@/lib/keystore";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
@@ -88,6 +88,14 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
             <NavLink to="/friends" label={t("nav_friends")} badge={requestCount} icon={<Users className="h-4 w-4" />} />
             <NavLink to="/settings" label={t("nav_settings")} icon={<Settings className="h-4 w-4" />} />
             <div className="mt-auto flex flex-col gap-2">
+            <Link
+              to="/watchlist"
+              title={t("nav_watchlist")}
+              aria-label={t("nav_watchlist")}
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground"
+            >
+              <Eye className="h-4 w-4" />
+            </Link>
             <Button
               type="button"
               variant="ghost"
