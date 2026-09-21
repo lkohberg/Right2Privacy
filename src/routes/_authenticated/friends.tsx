@@ -11,7 +11,7 @@ import {
   respondFriendRequest,
   unfriend,
 } from "@/lib/friends.functions";
-import { Check, X, UserPlus } from "lucide-react";
+import { Check, X, UserPlus, Inbox, Send, Users, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useActivity } from "@/components/activity-provider";
 
@@ -28,6 +28,18 @@ export const Route = createFileRoute("/_authenticated/friends")({
   }),
   component: FriendsPage,
 });
+
+function initials(handle: string) {
+  return handle.slice(0, 2).toUpperCase();
+}
+
+function Avatar({ handle }: { handle: string }) {
+  return (
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+      {initials(handle)}
+    </div>
+  );
+}
 
 function FriendsPage() {
   const { t } = useTranslation();
@@ -50,7 +62,7 @@ function FriendsPage() {
     setMsg(null);
     setBusy(true);
     try {
-      const clean = handle.trim().toLowerCase();
+      const clean = handle.trim().toLowerCase().replace(/^@/, "");
       if (!/^[a-zA-Z0-9_]{3,32}$/.test(clean)) throw new Error(t("friends_err_invalid"));
       const found = await searchFn({ data: { handle: clean } });
       if (!found) throw new Error(t("friends_err_no_user"));
@@ -86,39 +98,70 @@ function FriendsPage() {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-5 py-8 lg:px-6">
-      <h1 className="text-lg font-semibold lg:text-xl">{t("friends_title")}</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {t("friends_intro")}
-      </p>
+    <main className="mx-auto max-w-3xl px-5 py-7 lg:px-8 lg:py-9">
+      <header>
+        <h1 className="text-xl font-semibold tracking-tight lg:text-2xl">
+          {t("friends_title")}
+        </h1>
+        <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-muted-foreground">
+          {t("friends_intro")}
+        </p>
+      </header>
 
-      <form onSubmit={onAdd} className="mt-5 flex gap-2 lg:mt-6">
-        <input
-          value={handle}
-          onChange={(e) => setHandle(e.target.value)}
-          placeholder={t("friends_handle_ph")}
-          className="r2p-input min-w-0 flex-1"
-        />
-        <Button
-          disabled={busy}
-          className="shrink-0 px-3 lg:px-4"
-          aria-label={t("friends_add")}
-        >
-          <UserPlus className="h-4 w-4" /> <span className="hidden lg:inline">{t("friends_add")}</span>
-        </Button>
+      <form
+        onSubmit={onAdd}
+        className="mt-5 rounded-2xl border border-border bg-card p-4 shadow-sm lg:p-5"
+      >
+        <div className="flex items-center gap-2">
+          <div className="relative flex min-w-0 flex-1 items-center">
+            <span className="pointer-events-none absolute left-3 text-sm text-muted-foreground">
+              @
+            </span>
+            <input
+              value={handle}
+              onChange={(e) => setHandle(e.target.value)}
+              placeholder={t("friends_handle_ph")}
+              aria-label={t("friends_add")}
+              className="r2p-input h-11 w-full pl-7 font-mono"
+            />
+          </div>
+          <Button
+            disabled={busy || handle.trim().length === 0}
+            className="h-11 shrink-0 gap-2 rounded-xl px-4"
+          >
+            <UserPlus className="h-4 w-4" />
+            <span className="hidden sm:inline">{t("friends_add")}</span>
+          </Button>
+        </div>
+        {msg && (
+          <div className="mt-3 rounded-lg bg-accent px-3 py-2 text-sm text-foreground">
+            {msg}
+          </div>
+        )}
       </form>
-      {msg && <div className="mt-2 text-sm text-muted-foreground">{msg}</div>}
 
-      <Section title={t("friends_incoming")} hint={incoming.length === 0 ? t("friends_none") : undefined}>
+      <Section
+        icon={<Inbox className="h-4 w-4" />}
+        title={t("friends_incoming")}
+        count={incoming.length}
+        empty={incoming.length === 0 ? t("friends_none") : undefined}
+      >
         {incoming.map((r) => (
           <Row key={r.friendship_id}>
-            <div className="min-w-0">
-              <div className="truncate font-mono font-medium">@{r.other.handle}</div>
-              <div className="mt-0.5 text-xs text-muted-foreground">{t("friends_request_from", { handle: r.other.handle })}</div>
+            <Avatar handle={r.other.handle} />
+            <div className="min-w-0 flex-1">
+              <div className="truncate font-mono text-sm font-medium">
+                @{r.other.handle}
+              </div>
+              <div className="mt-0.5 truncate text-xs text-muted-foreground">
+                {t("friends_request_from", { handle: r.other.handle })}
+              </div>
             </div>
-            <div className="flex gap-1">
-              <IconBtn
-                title={t("friends_accept")}
+            <div className="flex shrink-0 gap-2">
+              <Button
+                type="button"
+                size="sm"
+                className="h-9 gap-1.5 rounded-lg"
                 onClick={async () => {
                   await respondFn({
                     data: { friendship_id: r.friendship_id, accept: true },
@@ -127,9 +170,13 @@ function FriendsPage() {
                 }}
               >
                 <Check className="h-4 w-4" />
-              </IconBtn>
-              <IconBtn
-                title={t("friends_decline")}
+                <span className="hidden sm:inline">{t("friends_accept")}</span>
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="h-9 gap-1.5 rounded-lg"
                 onClick={async () => {
                   await respondFn({
                     data: { friendship_id: r.friendship_id, accept: false },
@@ -138,18 +185,33 @@ function FriendsPage() {
                 }}
               >
                 <X className="h-4 w-4" />
-              </IconBtn>
+                <span className="hidden sm:inline">{t("friends_decline")}</span>
+              </Button>
             </div>
           </Row>
         ))}
       </Section>
 
-      <Section title={t("friends_outgoing")} hint={outgoing.length === 0 ? t("friends_none") : undefined}>
+      <Section
+        icon={<Send className="h-4 w-4" />}
+        title={t("friends_outgoing")}
+        count={outgoing.length}
+        empty={outgoing.length === 0 ? t("friends_none") : undefined}
+      >
         {outgoing.map((r) => (
           <Row key={r.friendship_id}>
-            <span className="text-muted-foreground">@{r.other.handle} · {t("friends_waiting")}</span>
+            <Avatar handle={r.other.handle} />
+            <div className="min-w-0 flex-1">
+              <div className="truncate font-mono text-sm font-medium text-muted-foreground">
+                @{r.other.handle}
+              </div>
+              <div className="mt-0.5 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+                {t("friends_waiting")}
+              </div>
+            </div>
             <IconBtn
-              title={t("friends_none")}
+              title={t("friends_decline")}
               onClick={async () => {
                 await unfriendFn({ data: { friendship_id: r.friendship_id } });
                 qc.invalidateQueries({ queryKey: ["friends"] });
@@ -161,19 +223,30 @@ function FriendsPage() {
         ))}
       </Section>
 
-      <Section title={t("friends_list")} hint={accepted.length === 0 ? t("friends_none_yet") : undefined}>
+      <Section
+        icon={<Users className="h-4 w-4" />}
+        title={t("friends_list")}
+        count={accepted.length}
+        empty={accepted.length === 0 ? t("friends_none_yet") : undefined}
+      >
         {accepted.map((r) => (
           <Row key={r.friendship_id}>
-            <span>@{r.other.handle}</span>
+            <Avatar handle={r.other.handle} />
+            <div className="min-w-0 flex-1">
+              <div className="truncate font-mono text-sm font-medium">
+                @{r.other.handle}
+              </div>
+            </div>
             <IconBtn
-              title={t("friends_none")}
+              title={t("friends_confirm_unfriend", { handle: r.other.handle })}
               onClick={async () => {
-                if (!confirm(t("friends_confirm_unfriend", { handle: r.other.handle }))) return;
+                if (!confirm(t("friends_confirm_unfriend", { handle: r.other.handle })))
+                  return;
                 await unfriendFn({ data: { friendship_id: r.friendship_id } });
                 qc.invalidateQueries({ queryKey: ["friends"] });
               }}
             >
-              <X className="h-4 w-4" />
+              <Trash2 className="h-4 w-4" />
             </IconBtn>
           </Row>
         ))}
@@ -184,7 +257,7 @@ function FriendsPage() {
           background: var(--color-input);
           color: var(--color-foreground);
           border: 1px solid var(--color-border);
-          border-radius: 0.375rem;
+          border-radius: 0.75rem;
           padding: 0.5rem 0.75rem;
           font-size: 0.9rem;
           outline: none;
@@ -196,33 +269,45 @@ function FriendsPage() {
 }
 
 function Section({
+  icon,
   title,
-  hint,
+  count,
+  empty,
   children,
 }: {
+  icon: React.ReactNode;
   title: string;
-  hint?: string;
+  count: number;
+  empty?: string;
   children?: React.ReactNode;
 }) {
   return (
-    <div className="mt-6 lg:mt-8">
-      <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-        {title}
-      </h2>
-      <div className="mt-2 divide-y divide-border rounded-md border border-border bg-card">
-        {hint ? (
-          <div className="px-4 py-3 text-sm text-muted-foreground">{hint}</div>
-        ) : (
-          children
+    <section className="mt-6 lg:mt-8">
+      <div className="flex items-center gap-2 px-1">
+        <span className="text-muted-foreground">{icon}</span>
+        <h2 className="text-sm font-semibold tracking-tight">{title}</h2>
+        {count > 0 && (
+          <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-semibold text-primary">
+            {count}
+          </span>
         )}
       </div>
-    </div>
+      <div className="mt-2 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+        {empty ? (
+          <div className="px-4 py-6 text-center text-sm text-muted-foreground">
+            {empty}
+          </div>
+        ) : (
+          <div className="divide-y divide-border">{children}</div>
+        )}
+      </div>
+    </section>
   );
 }
 
 function Row({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-between gap-2 px-3 py-2.5 text-sm lg:px-4 lg:py-3">
+    <div className="flex items-center gap-3 px-3 py-3 transition-colors hover:bg-accent/40 lg:px-4">
       {children}
     </div>
   );
@@ -245,7 +330,7 @@ function IconBtn({
       onClick={onClick}
       title={title}
       aria-label={title}
-      className="h-8 w-8 border border-border"
+      className="h-9 w-9 shrink-0 rounded-lg text-muted-foreground hover:text-foreground"
     >
       {children}
     </Button>
