@@ -147,13 +147,25 @@ export const sendFriendRequest = createServerFn({ method: "POST" })
       return { ok: true, autoAccepted: true };
     }
 
+    // Already sent (or already friends) — don't insert a duplicate.
+    const { data: existing } = await supabase
+      .from("friendships")
+      .select("id, status")
+      .eq("requester_id", userId)
+      .eq("addressee_id", data.addressee_id)
+      .maybeSingle();
+    if (existing) {
+      return { ok: true, autoAccepted: existing.status === "accepted", already: true };
+    }
+
     const { error } = await supabase.from("friendships").insert({
       requester_id: userId,
       addressee_id: data.addressee_id,
       status: "pending",
     });
     if (error) throw new Error(error.message);
-    return { ok: true, autoAccepted: false };
+    return { ok: true, autoAccepted: false, already: false };
+
   });
 
 export const respondFriendRequest = createServerFn({ method: "POST" })
