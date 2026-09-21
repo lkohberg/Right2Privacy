@@ -97,6 +97,14 @@ function SettingsPage() {
               {browserAlertsEnabled ? <BellRing className="h-5 w-5 text-primary" /> : <Bell className="h-5 w-5" />}
               {browserAlertsEnabled ? t("notifications_enabled") : t("notifications_enable")}
             </Button>
+            <Link
+              to="/watchlist"
+              className="flex h-11 items-center justify-start gap-3 rounded-md px-3 text-sm font-medium hover:bg-accent"
+            >
+              <Eye className="h-5 w-5 text-muted-foreground" />
+              Which services are being watched
+              <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground" />
+            </Link>
             <Button type="button" variant="ghost" onClick={signOut} className="h-11 justify-start gap-3 px-3 text-destructive hover:text-destructive">
               <LogOut className="h-5 w-5" />
               {t("nav_signout")}
