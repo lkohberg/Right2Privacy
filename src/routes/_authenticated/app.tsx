@@ -232,20 +232,18 @@ function Workspace() {
             <div
               role="tabpanel"
               aria-hidden={tab !== "encrypt"}
-              className={`grid transition-all duration-300 ease-out motion-reduce:transition-none ${tab === "encrypt" ? "grid-rows-[1fr] translate-y-0 opacity-100" : "pointer-events-none grid-rows-[0fr] -translate-y-4 opacity-0"}`}
+              hidden={tab !== "encrypt"}
+              className="animate-message-roll-down motion-reduce:animate-none"
             >
-              <div className="min-h-0 overflow-hidden">
-                <EncryptPanel friends={accepted} selectedFriendId={selectedFriendId} />
-              </div>
+              <EncryptPanel friends={accepted} selectedFriendId={selectedFriendId} />
             </div>
             <div
               role="tabpanel"
               aria-hidden={tab !== "decrypt"}
-              className={`grid transition-all duration-300 ease-out motion-reduce:transition-none ${tab === "decrypt" ? "grid-rows-[1fr] translate-y-0 opacity-100" : "pointer-events-none grid-rows-[0fr] translate-y-4 opacity-0"}`}
+              hidden={tab !== "decrypt"}
+              className="animate-message-roll-up motion-reduce:animate-none"
             >
-              <div className="min-h-0 overflow-hidden">
-                <DecryptPanel selectedFriendId={selectedFriendId} onActivityConsumed={activity.refresh} />
-              </div>
+              <DecryptPanel selectedFriendId={selectedFriendId} onActivityConsumed={activity.refresh} />
             </div>
           </div>
         </div>

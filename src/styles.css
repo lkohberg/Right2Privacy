@@ -143,3 +143,35 @@
     color: var(--color-foreground);
   }
 }
+
+@keyframes message-roll-down {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem) rotateX(4deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+  }
+}
+
+@keyframes message-roll-up {
+  from {
+    opacity: 0;
+    transform: translateY(1rem) rotateX(-4deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+  }
+}
+
+@utility animate-message-roll-down {
+  animation: message-roll-down 300ms ease-out;
+  transform-origin: top center;
+}
+
+@utility animate-message-roll-up {
+  animation: message-roll-up 300ms ease-out;
+  transform-origin: bottom center;
+}
