@@ -189,7 +189,7 @@ function Workspace() {
       ) : tab === "encrypt" ? (
         <EncryptPanel friends={accepted} selectedFriendId={selectedFriendId} />
       ) : (
-        <DecryptPanel friends={accepted} selectedFriendId={selectedFriendId} onActivityConsumed={activity.refresh} />
+        <DecryptPanel selectedFriendId={selectedFriendId} onActivityConsumed={activity.refresh} />
       )}
 
       <FieldStyles />
@@ -201,7 +201,6 @@ function Workspace() {
 
 function EncryptPanel({ friends, selectedFriendId }: { friends: Friend[]; selectedFriendId: string }) {
   const { t } = useTranslation();
-  const [recipientId, setRecipientId] = useState(friends[0]?.other.id ?? "");
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -211,19 +210,12 @@ function EncryptPanel({ friends, selectedFriendId }: { friends: Friend[]; select
   const archiveKey = useServerFn(archiveMessageKey);
   const myProfileFn = useServerFn(getMyProfile);
 
-  useEffect(() => {
-    if (!recipientId && friends[0]) setRecipientId(friends[0].other.id);
-  }, [friends, recipientId]);
-  useEffect(() => {
-    if (selectedFriendId) setRecipientId(selectedFriendId);
-  }, [selectedFriendId]);
-
   async function onEncrypt() {
     setError(null);
     setOutput(null);
     setBusy(true);
     try {
-      const recipient = friends.find((f) => f.other.id === recipientId);
+      const recipient = friends.find((f) => f.other.id === selectedFriendId);
       if (!recipient) throw new Error(t("app_err_pick_recipient"));
       if (!recipient.other.public_key) throw new Error(t("app_err_missing_key"));
       if (!text.trim()) throw new Error(t("app_err_type"));
@@ -271,19 +263,6 @@ function EncryptPanel({ friends, selectedFriendId }: { friends: Friend[]; select
 
   return (
     <div className="space-y-4">
-      <Field label={t("app_recipient")}>
-        <select
-          value={recipientId}
-          onChange={(e) => setRecipientId(e.target.value)}
-          className="r2p-input"
-        >
-          {friends.map((f) => (
-            <option key={f.other.id} value={f.other.id}>
-              @{f.other.handle}
-            </option>
-          ))}
-        </select>
-      </Field>
       <Field label={t("app_message")}>
         <textarea
           value={text}
@@ -330,9 +309,8 @@ function EncryptPanel({ friends, selectedFriendId }: { friends: Friend[]; select
   );
 }
 
-function DecryptPanel({ friends, selectedFriendId, onActivityConsumed }: { friends: Friend[]; selectedFriendId: string; onActivityConsumed: () => Promise<void> }) {
+function DecryptPanel({ selectedFriendId, onActivityConsumed }: { selectedFriendId: string; onActivityConsumed: () => Promise<void> }) {
   const { t } = useTranslation();
-  const [senderId, setSenderId] = useState(friends[0]?.other.id ?? "");
   const [blob, setBlob] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -342,13 +320,6 @@ function DecryptPanel({ friends, selectedFriendId, onActivityConsumed }: { frien
   const fetchArchived = useServerFn(fetchArchivedKey);
   const archiveKey = useServerFn(archiveMessageKey);
   const myProfileFn = useServerFn(getMyProfile);
-
-  useEffect(() => {
-    if (!senderId && friends[0]) setSenderId(friends[0].other.id);
-  }, [friends, senderId]);
-  useEffect(() => {
-    if (selectedFriendId) setSenderId(selectedFriendId);
-  }, [selectedFriendId]);
 
   async function onDecrypt() {
     setError(null);
@@ -371,7 +342,7 @@ function DecryptPanel({ friends, selectedFriendId, onActivityConsumed }: { frien
       }
 
       const key = await fetchKey({
-        data: { message_id: parsed.mid, sender_id: senderId },
+        data: { message_id: parsed.mid, sender_id: selectedFriendId },
       });
       if (!key) throw new Error(t("app_err_no_key"));
       const raw = await unwrapRawKey(key.wrapped_key, priv);
@@ -385,7 +356,7 @@ function DecryptPanel({ friends, selectedFriendId, onActivityConsumed }: { frien
           await archiveKey({
             data: {
               message_id: parsed.mid,
-              counterpart_id: senderId,
+              counterpart_id: selectedFriendId,
               direction: "received",
               wrapped_key: await wrapRawKeyFor(raw, me.public_key),
             },
@@ -403,19 +374,6 @@ function DecryptPanel({ friends, selectedFriendId, onActivityConsumed }: { frien
 
   return (
     <div className="space-y-4">
-      <Field label={t("app_sender")}>
-        <select
-          value={senderId}
-          onChange={(e) => setSenderId(e.target.value)}
-          className="r2p-input"
-        >
-          {friends.map((f) => (
-            <option key={f.other.id} value={f.other.id}>
-              @{f.other.handle}
-            </option>
-          ))}
-        </select>
-      </Field>
       <Field label={t("app_ciphertext_input")}>
         <textarea
           value={blob}
