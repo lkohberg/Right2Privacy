@@ -46,7 +46,9 @@ export const getMyProfile = createServerFn({ method: "GET" })
     const { supabase, userId } = context;
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, handle, public_key, encrypted_private_key, pk_salt, pk_iv, language, chat_mode, created_at")
+      .select(
+        "id, handle, public_key, encrypted_private_key, pk_salt, pk_iv, language, chat_mode, created_at, read_receipts, theme, notify_detail, auto_delete_hours",
+      )
       .eq("id", userId)
       .maybeSingle();
     if (error) throw new Error(error.message);
@@ -79,6 +81,63 @@ export const updateChatMode = createServerFn({ method: "POST" })
       .from("profiles")
       .update({ chat_mode: data.chat_mode })
       .eq("id", userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const updatePreferences = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: {
+    read_receipts?: boolean;
+    theme?: "dark" | "light" | "system";
+    notify_detail?: "full" | "minimal";
+    auto_delete_hours?: number;
+  }) =>
+    z
+      .object({
+        read_receipts: z.boolean().optional(),
+        theme: z.enum(["dark", "light", "system"]).optional(),
+        notify_detail: z.enum(["full", "minimal"]).optional(),
+        auto_delete_hours: z.number().int().min(0).max(8760).optional(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const patch: Record<string, unknown> = {};
+    if (data.read_receipts !== undefined) patch["read_receipts"] = data.read_receipts;
+    if (data.theme !== undefined) patch["theme"] = data.theme;
+    if (data.notify_detail !== undefined) patch["notify_detail"] = data.notify_detail;
+    if (data.auto_delete_hours !== undefined) patch["auto_delete_hours"] = data.auto_delete_hours;
+    if (Object.keys(patch).length === 0) return { ok: true };
+    const { error } = await supabase.from("profiles").update(patch).eq("id", userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const deleteMyAccount = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { userId } = context;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await supabaseAdmin
+      .from("messages")
+      .delete()
+      .or(`sender_id.eq.${userId},recipient_id.eq.${userId}`);
+    await supabaseAdmin
+      .from("pending_keys")
+      .delete()
+      .or(`sender_id.eq.${userId},recipient_id.eq.${userId}`);
+    await supabaseAdmin
+      .from("message_keys")
+      .delete()
+      .or(`owner_id.eq.${userId},counterpart_id.eq.${userId}`);
+    await supabaseAdmin
+      .from("friendships")
+      .delete()
+      .or(`requester_id.eq.${userId},addressee_id.eq.${userId}`);
+    await supabaseAdmin.from("profiles").delete().eq("id", userId);
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
