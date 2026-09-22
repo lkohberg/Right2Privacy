@@ -29,6 +29,13 @@
       "when": 1790084958418,
       "tag": "0003_create_messages_and_chat_mode",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790098679076,
+      "tag": "0004_add_user_preferences",
+      "breakpoints": true
     }
   ]
 }
