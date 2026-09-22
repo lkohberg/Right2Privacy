@@ -157,7 +157,7 @@ function Workspace() {
                   <span className="min-w-0 flex-1 text-left">
                     <span className="block truncate text-[15px] font-semibold">@{friend.other.handle}</span>
                     <span className="mt-0.5 block truncate font-sans text-xs font-normal text-muted-foreground">
-                      {count > 0 ? t("activity_key_waiting", { handle: friend.other.handle }) : t("app_encrypt")}
+                      {count > 0 ? t("activity_key_waiting", { handle: friend.other.handle }) : chatMode === "chat" ? t("chat_mode_chat") : t("app_encrypt")}
                     </span>
                   </span>
                   <span className="flex shrink-0 items-center gap-2">
