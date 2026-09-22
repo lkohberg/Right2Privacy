@@ -15,6 +15,9 @@ import { Button } from "@/components/ui/button";
 import { useActivity } from "@/components/activity-provider";
 import { clearContactNotifications } from "@/lib/activity.functions";
 import { NewsTicker } from "@/components/news-ticker";
+import { ChatPanel } from "@/components/chat-panel";
+import { useChatMode } from "@/lib/use-chat-mode";
+import { countUnreadMessages } from "@/lib/messages.functions";
 
 export const Route = createFileRoute("/_authenticated/app")({
   validateSearch: (
