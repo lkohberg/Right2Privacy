@@ -177,7 +177,7 @@ export function ChatPanel({
                 </span>
                 {row.mine && (
                   <span
-                    className="inline-flex items-center"
+                    className={`inline-flex items-center ${row.read_at ? "text-sky-400 dark:text-sky-300" : ""}`}
                     title={t(row.read_at ? "chat_status_read" : "chat_status_sent")}
                     aria-label={t(row.read_at ? "chat_status_read" : "chat_status_sent")}
                   >
