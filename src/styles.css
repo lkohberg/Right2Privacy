@@ -98,7 +98,7 @@
   --sidebar-border: oklch(0.3 0.015 260);
   --sidebar-ring: oklch(0.82 0.16 150);
   /* Read receipt (WhatsApp-style double check) — deep forest green, high contrast on light bubbles */
-  --read: oklch(0.38 0.1 152);
+  --read: oklch(0.42 0.14 250);
 }
 
 .dark {
