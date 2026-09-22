@@ -75,6 +75,7 @@ export function ChatPanel({
   });
 
   const rows = useMemo(() => (conversationQ.data ?? []) as Row[], [conversationQ.data]);
+  const refetchConversation = conversationQ.refetch;
 
   useEffect(() => {
     if (!privKey || rows.length === 0) return;
@@ -108,10 +109,10 @@ export function ChatPanel({
     readableUnreadIds.forEach((id) => markingReadRef.current.add(id));
     void markReadFn({ data: { message_ids: readableUnreadIds } })
       .then(async () => {
-        await Promise.all([conversationQ.refetch(), onActivityConsumed()]);
+        await Promise.all([refetchConversation(), onActivityConsumed()]);
       })
       .catch(() => readableUnreadIds.forEach((id) => markingReadRef.current.delete(id)));
-  }, [rows, plain, markReadFn, onActivityConsumed, conversationQ]);
+  }, [rows, plain, markReadFn, onActivityConsumed, refetchConversation]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ block: "end" });
