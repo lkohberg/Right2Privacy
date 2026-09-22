@@ -180,6 +180,7 @@ function SettingsPage() {
           </div>
         </Card>
 
+        <Card title={t("settings_encryption")}>
           <Row label={t("settings_priv_local")}>
             {hasLocalKey === null
               ? "…"
