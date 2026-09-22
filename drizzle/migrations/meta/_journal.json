@@ -22,6 +22,13 @@
       "when": 1790008230551,
       "tag": "0002_restrict_pending_key_dismissal_update",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790084958418,
+      "tag": "0003_create_messages_and_chat_mode",
+      "breakpoints": true
     }
   ]
 }

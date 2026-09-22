@@ -68,6 +68,39 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          ciphertext: string
+          created_at: string
+          id: string
+          read_at: string | null
+          recipient_id: string
+          sender_id: string
+          wrapped_key_recipient: string
+          wrapped_key_sender: string
+        }
+        Insert: {
+          ciphertext: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          recipient_id: string
+          sender_id: string
+          wrapped_key_recipient: string
+          wrapped_key_sender: string
+        }
+        Update: {
+          ciphertext?: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          recipient_id?: string
+          sender_id?: string
+          wrapped_key_recipient?: string
+          wrapped_key_sender?: string
+        }
+        Relationships: []
+      }
       pending_keys: {
         Row: {
           created_at: string
@@ -100,6 +133,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          chat_mode: string
           created_at: string
           encrypted_private_key: string
           handle: string
@@ -110,6 +144,7 @@ export type Database = {
           public_key: string
         }
         Insert: {
+          chat_mode?: string
           created_at?: string
           encrypted_private_key: string
           handle: string
@@ -120,6 +155,7 @@ export type Database = {
           public_key: string
         }
         Update: {
+          chat_mode?: string
           created_at?: string
           encrypted_private_key?: string
           handle?: string
