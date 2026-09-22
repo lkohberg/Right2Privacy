@@ -12,6 +12,7 @@ import { Bell, BellRing, ChevronRight, Eye, History as HistoryIcon, LogOut, Mess
 import { useChatMode } from "@/lib/use-chat-mode";
 import { Button } from "@/components/ui/button";
 import { useActivity } from "@/components/activity-provider";
+import { HelpDialog } from "@/components/help-dialog";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
