@@ -7,3 +7,6 @@
 - [x] Verify the revised control across screen sizes.
 - [x] Expand the question-mark guide into a complete walkthrough in all 24 languages.
 - [x] Revamp notifications for Chat and Legacy modes with consistent alerts, badges, and actions.
+
+- [ ] Show sent/read status on chat messages.
+- [ ] Keep chat history scrolling inside the message window.
