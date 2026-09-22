@@ -12,6 +12,7 @@ import { Bell, BellRing, ChevronRight, Eye, History as HistoryIcon, LogOut, Mess
 import { useChatMode } from "@/lib/use-chat-mode";
 import { Button } from "@/components/ui/button";
 import { useActivity } from "@/components/activity-provider";
+import { HelpDialog } from "@/components/help-dialog";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
@@ -171,6 +172,13 @@ function SettingsPage() {
             </span>
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
           </Link>
+        </Card>
+
+        <Card title={t("help_title")}>
+          <div className="flex items-center justify-between gap-3 px-4 py-3">
+            <span className="text-sm text-muted-foreground">{t("help_intro")}</span>
+            <HelpDialog triggerClassName="h-9 w-9 shrink-0 rounded-lg text-muted-foreground" />
+          </div>
         </Card>
 
         <Card title={t("settings_encryption")}>
