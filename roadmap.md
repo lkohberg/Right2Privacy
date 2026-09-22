@@ -6,3 +6,4 @@
 - [x] Make the mode slider taller, slimmer, and barrel-like.
 - [x] Verify the revised control across screen sizes.
 - [x] Expand the question-mark guide into a complete walkthrough in all 24 languages.
+- [ ] Revamp notifications for Chat and Legacy modes with consistent alerts, badges, and actions.
