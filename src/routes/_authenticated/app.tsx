@@ -222,7 +222,7 @@ function Workspace() {
         </Button>
       </div>
       <div className={`min-h-0 flex-1 lg:px-8 lg:py-7 ${chatMode === "chat" ? "flex flex-col overflow-hidden" : "overflow-y-auto"}`}>
-      <div className={`mx-auto w-full max-w-3xl ${chatMode === "chat" ? "flex min-h-0 flex-1 flex-col" : ""}`}>
+      <div className={`mx-auto w-full ${chatMode === "chat" ? "flex min-h-0 max-w-5xl flex-1 flex-col" : "max-w-3xl"}`}>
       {friendsQ.isLoading ? (
         <div className="text-sm text-muted-foreground">{t("app_loading_friends")}</div>
       ) : accepted.length === 0 ? (
