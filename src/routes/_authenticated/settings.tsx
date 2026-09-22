@@ -135,6 +135,29 @@ function SettingsPage() {
           </div>
         </Card>
 
+        <Card title={t("chat_mode_title")}>
+          <div className="grid grid-cols-2 gap-2 p-3">
+            <Button
+              type="button"
+              variant={chatMode === "chat" ? "default" : "outline"}
+              onClick={() => void setChatMode("chat")}
+              className="h-11 gap-2"
+            >
+              <MessagesSquare className="h-4 w-4" />
+              {t("chat_mode_chat")}
+            </Button>
+            <Button
+              type="button"
+              variant={chatMode === "legacy" ? "default" : "outline"}
+              onClick={() => void setChatMode("legacy")}
+              className="h-11 gap-2"
+            >
+              <HistoryIcon className="h-4 w-4" />
+              {t("chat_mode_legacy")}
+            </Button>
+          </div>
+        </Card>
+
         <Card title="Watchlist">
           <Link
             to="/watchlist"
