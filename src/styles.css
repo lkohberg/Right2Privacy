@@ -283,6 +283,14 @@
   animation: r2p-ticker 180s linear infinite;
 }
 
+@utility scrollbar-hidden {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .ticker-fade {
   mask-image: linear-gradient(to right, transparent, black 3rem, black calc(100% - 3rem), transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, black 3rem, black calc(100% - 3rem), transparent);

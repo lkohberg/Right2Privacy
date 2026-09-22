@@ -10,3 +10,4 @@
 
 - [x] Show sent/read status on chat messages.
 - [x] Keep chat history scrolling inside the message window.
+- [x] Hide the chat scrollbar while preserving scrolling.
