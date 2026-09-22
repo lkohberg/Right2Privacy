@@ -72,6 +72,7 @@ function AuthedLayout() {
 function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
   const { t } = useTranslation();
   const { messages, friendRequests, browserAlertsEnabled, enableBrowserAlerts } = useActivity();
+  const { mode: chatMode, setMode: setChatMode } = useChatMode();
   const activityCount = messages.length;
   const requestCount = friendRequests.length;
 
@@ -98,7 +99,7 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
               aria-label={`${t("chat_mode_title")}: ${chatMode === "chat" ? t("chat_mode_chat") : t("chat_mode_legacy")}`}
               className={`h-10 w-10 rounded-lg ${chatMode === "chat" ? "text-primary" : "text-muted-foreground"}`}
             >
-              {chatMode === "chat" ? <MessagesSquare className="h-4 w-4" /> : <History className="h-4 w-4" />}
+              {chatMode === "chat" ? <MessagesSquare className="h-4 w-4" /> : <HistoryIcon className="h-4 w-4" />}
             </Button>
             <Link
               to="/watchlist"
