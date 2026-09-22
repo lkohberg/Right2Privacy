@@ -13,6 +13,7 @@ import { SUPPORTED_CODES } from "@/i18n/languages";
 import { ActivityProvider, useActivity } from "@/components/activity-provider";
 import { Button } from "@/components/ui/button";
 import { HelpDialog } from "@/components/help-dialog";
+import { useApplyTheme } from "@/lib/use-theme";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -28,6 +29,7 @@ function AuthedLayout() {
   const navigate = useNavigate();
   const { user } = Route.useRouteContext();
   const { t, i18n } = useTranslation();
+  useApplyTheme();
 
   const getProfile = useServerFn(getMyProfile);
   const profileQ = useQuery({
