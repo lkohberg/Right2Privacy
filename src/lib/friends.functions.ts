@@ -46,7 +46,7 @@ export const getMyProfile = createServerFn({ method: "GET" })
     const { supabase, userId } = context;
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, handle, public_key, encrypted_private_key, pk_salt, pk_iv, language, created_at")
+      .select("id, handle, public_key, encrypted_private_key, pk_salt, pk_iv, language, chat_mode, created_at")
       .eq("id", userId)
       .maybeSingle();
     if (error) throw new Error(error.message);
