@@ -8,7 +8,8 @@ import { clearPrivateKey, loadPrivateKey } from "@/lib/keystore";
 import { useTranslation } from "react-i18next";
 import "@/i18n";
 import { LANGUAGES, SUPPORTED_CODES } from "@/i18n/languages";
-import { Bell, BellRing, ChevronRight, Eye, LogOut } from "lucide-react";
+import { Bell, BellRing, ChevronRight, Eye, History as HistoryIcon, LogOut, MessagesSquare } from "lucide-react";
+import { useChatMode } from "@/lib/use-chat-mode";
 import { Button } from "@/components/ui/button";
 import { useActivity } from "@/components/activity-provider";
 
@@ -30,6 +31,7 @@ function SettingsPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { browserAlertsEnabled, enableBrowserAlerts } = useActivity();
+  const { mode: chatMode, setMode: setChatMode } = useChatMode();
   const getProfile = useServerFn(getMyProfile);
   const setLangFn = useServerFn(updateLanguage);
   const qc = useQueryClient();
