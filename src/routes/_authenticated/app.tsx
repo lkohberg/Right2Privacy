@@ -80,10 +80,24 @@ function Workspace() {
   }, [requestedContact, requestedMode]);
 
 
-  const waitingByFriend = activity.messages.reduce<Record<string, number>>((counts, item) => {
-    counts[item.sender_id] = (counts[item.sender_id] ?? 0) + 1;
-    return counts;
-  }, {});
+  const { mode: chatMode } = useChatMode();
+  const myProfileFn = useServerFn(getMyProfile);
+  const myProfileQ = useQuery({ queryKey: ["profile"], queryFn: () => myProfileFn() });
+  const unreadFn = useServerFn(countUnreadMessages);
+  const unreadQ = useQuery({
+    queryKey: ["unread-messages"],
+    queryFn: () => unreadFn(),
+    enabled: chatMode === "chat",
+    refetchInterval: 15000,
+  });
+
+  const waitingByFriend =
+    chatMode === "chat"
+      ? ((unreadQ.data ?? {}) as Record<string, number>)
+      : activity.messages.reduce<Record<string, number>>((counts, item) => {
+          counts[item.sender_id] = (counts[item.sender_id] ?? 0) + 1;
+          return counts;
+        }, {});
 
   function openContact(friendId: string, nextTab: "encrypt" | "decrypt" = "encrypt") {
     setSelectedFriendId(friendId);
