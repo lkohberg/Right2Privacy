@@ -46,7 +46,7 @@ export const getMyProfile = createServerFn({ method: "GET" })
     const { supabase, userId } = context;
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, handle, public_key, encrypted_private_key, pk_salt, pk_iv, language, created_at")
+      .select("id, handle, public_key, encrypted_private_key, pk_salt, pk_iv, language, chat_mode, created_at")
       .eq("id", userId)
       .maybeSingle();
     if (error) throw new Error(error.message);
@@ -63,6 +63,21 @@ export const updateLanguage = createServerFn({ method: "POST" })
     const { error } = await supabase
       .from("profiles")
       .update({ language: data.language })
+      .eq("id", userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const updateChatMode = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { chat_mode: "chat" | "legacy" }) =>
+    z.object({ chat_mode: z.enum(["chat", "legacy"]) }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { error } = await supabase
+      .from("profiles")
+      .update({ chat_mode: data.chat_mode })
       .eq("id", userId);
     if (error) throw new Error(error.message);
     return { ok: true };

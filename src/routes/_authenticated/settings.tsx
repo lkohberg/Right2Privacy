@@ -8,7 +8,8 @@ import { clearPrivateKey, loadPrivateKey } from "@/lib/keystore";
 import { useTranslation } from "react-i18next";
 import "@/i18n";
 import { LANGUAGES, SUPPORTED_CODES } from "@/i18n/languages";
-import { Bell, BellRing, ChevronRight, Eye, LogOut } from "lucide-react";
+import { Bell, BellRing, ChevronRight, Eye, History as HistoryIcon, LogOut, MessagesSquare } from "lucide-react";
+import { useChatMode } from "@/lib/use-chat-mode";
 import { Button } from "@/components/ui/button";
 import { useActivity } from "@/components/activity-provider";
 
@@ -30,6 +31,7 @@ function SettingsPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { browserAlertsEnabled, enableBrowserAlerts } = useActivity();
+  const { mode: chatMode, setMode: setChatMode } = useChatMode();
   const getProfile = useServerFn(getMyProfile);
   const setLangFn = useServerFn(updateLanguage);
   const qc = useQueryClient();
@@ -132,6 +134,29 @@ function SettingsPage() {
             {langError && (
               <div className="mt-1 text-xs text-destructive">{langError}</div>
             )}
+          </div>
+        </Card>
+
+        <Card title={t("chat_mode_title")}>
+          <div className="grid grid-cols-2 gap-2 p-3">
+            <Button
+              type="button"
+              variant={chatMode === "chat" ? "default" : "outline"}
+              onClick={() => void setChatMode("chat")}
+              className="h-11 gap-2"
+            >
+              <MessagesSquare className="h-4 w-4" />
+              {t("chat_mode_chat")}
+            </Button>
+            <Button
+              type="button"
+              variant={chatMode === "legacy" ? "default" : "outline"}
+              onClick={() => void setChatMode("legacy")}
+              className="h-11 gap-2"
+            >
+              <HistoryIcon className="h-4 w-4" />
+              {t("chat_mode_legacy")}
+            </Button>
           </div>
         </Card>
 

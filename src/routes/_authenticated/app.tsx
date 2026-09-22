@@ -15,6 +15,9 @@ import { Button } from "@/components/ui/button";
 import { useActivity } from "@/components/activity-provider";
 import { clearContactNotifications } from "@/lib/activity.functions";
 import { NewsTicker } from "@/components/news-ticker";
+import { ChatPanel } from "@/components/chat-panel";
+import { useChatMode } from "@/lib/use-chat-mode";
+import { countUnreadMessages } from "@/lib/messages.functions";
 
 export const Route = createFileRoute("/_authenticated/app")({
   validateSearch: (
@@ -77,10 +80,24 @@ function Workspace() {
   }, [requestedContact, requestedMode]);
 
 
-  const waitingByFriend = activity.messages.reduce<Record<string, number>>((counts, item) => {
-    counts[item.sender_id] = (counts[item.sender_id] ?? 0) + 1;
-    return counts;
-  }, {});
+  const { mode: chatMode } = useChatMode();
+  const myProfileFn = useServerFn(getMyProfile);
+  const myProfileQ = useQuery({ queryKey: ["profile"], queryFn: () => myProfileFn() });
+  const unreadFn = useServerFn(countUnreadMessages);
+  const unreadQ = useQuery({
+    queryKey: ["unread-messages"],
+    queryFn: () => unreadFn(),
+    enabled: chatMode === "chat",
+    refetchInterval: 15000,
+  });
+
+  const waitingByFriend =
+    chatMode === "chat"
+      ? ((unreadQ.data ?? {}) as Record<string, number>)
+      : activity.messages.reduce<Record<string, number>>((counts, item) => {
+          counts[item.sender_id] = (counts[item.sender_id] ?? 0) + 1;
+          return counts;
+        }, {});
 
   function openContact(friendId: string, nextTab: "encrypt" | "decrypt" = "encrypt") {
     setSelectedFriendId(friendId);
@@ -140,7 +157,7 @@ function Workspace() {
                   <span className="min-w-0 flex-1 text-left">
                     <span className="block truncate text-[15px] font-semibold">@{friend.other.handle}</span>
                     <span className="mt-0.5 block truncate font-sans text-xs font-normal text-muted-foreground">
-                      {count > 0 ? t("activity_key_waiting", { handle: friend.other.handle }) : t("app_encrypt")}
+                      {count > 0 ? t("activity_key_waiting", { handle: friend.other.handle }) : chatMode === "chat" ? t("chat_mode_chat") : t("app_encrypt")}
                     </span>
                   </span>
                   <span className="flex shrink-0 items-center gap-2">
@@ -172,7 +189,7 @@ function Workspace() {
           size="sm"
           disabled={!selectedFriend || selectedWaitingCount === 0 || clearingNotifications}
           onClick={() => void clearSelectedContactNotifications()}
-          className="h-9 gap-1.5 rounded-full px-3 text-xs"
+          className={`h-9 gap-1.5 rounded-full px-3 text-xs ${chatMode === "chat" ? "invisible" : ""}`}
           title={t("app_clear_notifications")}
         >
           <BellOff className="h-4 w-4" />
@@ -197,21 +214,32 @@ function Workspace() {
           size="sm"
           disabled={!selectedFriend || selectedWaitingCount === 0 || clearingNotifications}
           onClick={() => void clearSelectedContactNotifications()}
-          className="gap-2 rounded-full px-4"
+          className={`gap-2 rounded-full px-4 ${chatMode === "chat" ? "invisible" : ""}`}
           title={t("app_clear_notifications")}
         >
           <BellOff className="h-4 w-4" />
           {t("app_clear")}
         </Button>
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto lg:px-8 lg:py-7">
-      <div className="mx-auto max-w-3xl">
+      <div className={`min-h-0 flex-1 lg:px-8 lg:py-7 ${chatMode === "chat" ? "flex flex-col overflow-hidden" : "overflow-y-auto"}`}>
+      <div className={`mx-auto w-full max-w-3xl ${chatMode === "chat" ? "flex min-h-0 flex-1 flex-col" : ""}`}>
       {friendsQ.isLoading ? (
         <div className="text-sm text-muted-foreground">{t("app_loading_friends")}</div>
       ) : accepted.length === 0 ? (
         <div className="rounded-md border border-border bg-card p-6 text-sm text-muted-foreground">
           {t("app_no_friends")}
         </div>
+      ) : chatMode === "chat" ? (
+        selectedFriend ? (
+          <ChatPanel
+            key={selectedFriend.other.id}
+            contactId={selectedFriend.other.id}
+            contactPublicKey={selectedFriend.other.public_key}
+            myPublicKey={myProfileQ.data?.public_key ?? null}
+          />
+        ) : (
+          <div className="py-10 text-center text-sm text-muted-foreground">{t("chat_empty")}</div>
+        )
       ) : (
         <div className="grid grid-cols-2 grid-rows-[minmax(0,1fr)_auto] items-start gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_5.25rem] lg:grid-rows-1 lg:gap-6">
           <div className="col-span-2 min-w-0 overflow-hidden lg:col-span-1 lg:col-start-1 lg:row-start-1">
