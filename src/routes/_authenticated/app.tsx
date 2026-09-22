@@ -189,7 +189,7 @@ function Workspace() {
           size="sm"
           disabled={!selectedFriend || selectedWaitingCount === 0 || clearingNotifications}
           onClick={() => void clearSelectedContactNotifications()}
-          className="h-9 gap-1.5 rounded-full px-3 text-xs"
+          className={`h-9 gap-1.5 rounded-full px-3 text-xs ${chatMode === "chat" ? "invisible" : ""}`}
           title={t("app_clear_notifications")}
         >
           <BellOff className="h-4 w-4" />
@@ -214,7 +214,7 @@ function Workspace() {
           size="sm"
           disabled={!selectedFriend || selectedWaitingCount === 0 || clearingNotifications}
           onClick={() => void clearSelectedContactNotifications()}
-          className="gap-2 rounded-full px-4"
+          className={`gap-2 rounded-full px-4 ${chatMode === "chat" ? "invisible" : ""}`}
           title={t("app_clear_notifications")}
         >
           <BellOff className="h-4 w-4" />
