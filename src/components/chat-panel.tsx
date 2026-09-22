@@ -16,7 +16,7 @@ import {
 } from "@/lib/crypto";
 import {
   listConversation,
-  markConversationRead,
+  markMessagesRead,
   sendMessage,
 } from "@/lib/messages.functions";
 
@@ -33,10 +33,12 @@ export function ChatPanel({
   contactId,
   contactPublicKey,
   myPublicKey,
+  onActivityConsumed,
 }: {
   contactId: string;
   contactPublicKey: string;
   myPublicKey: string | null;
+  onActivityConsumed: () => Promise<void>;
 }) {
   const { t } = useTranslation();
   const [text, setText] = useState("");
@@ -48,7 +50,7 @@ export function ChatPanel({
 
   const listFn = useServerFn(listConversation);
   const sendFn = useServerFn(sendMessage);
-  const markReadFn = useServerFn(markConversationRead);
+  const markReadFn = useServerFn(markMessagesRead);
 
   useEffect(() => {
     let active = true;
@@ -98,10 +100,12 @@ export function ChatPanel({
   }, [rows, privKey, plain]);
 
   useEffect(() => {
-    if (rows.some((row) => !row.mine && !row.read_at)) {
-      void markReadFn({ data: { contact_id: contactId } });
-    }
-  }, [rows, contactId, markReadFn]);
+    const readableUnreadIds = rows
+      .filter((row) => !row.mine && !row.read_at && plain[row.id] && plain[row.id] !== "🔒")
+      .map((row) => row.id);
+    if (readableUnreadIds.length === 0) return;
+    void markReadFn({ data: { message_ids: readableUnreadIds } }).then(onActivityConsumed);
+  }, [rows, plain, markReadFn, onActivityConsumed]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ block: "end" });

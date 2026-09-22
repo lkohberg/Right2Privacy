@@ -17,7 +17,6 @@ import { clearContactNotifications } from "@/lib/activity.functions";
 import { NewsTicker } from "@/components/news-ticker";
 import { ChatPanel } from "@/components/chat-panel";
 import { useChatMode } from "@/lib/use-chat-mode";
-import { countUnreadMessages } from "@/lib/messages.functions";
 
 export const Route = createFileRoute("/_authenticated/app")({
   validateSearch: (
@@ -83,21 +82,11 @@ function Workspace() {
   const { mode: chatMode } = useChatMode();
   const myProfileFn = useServerFn(getMyProfile);
   const myProfileQ = useQuery({ queryKey: ["profile"], queryFn: () => myProfileFn() });
-  const unreadFn = useServerFn(countUnreadMessages);
-  const unreadQ = useQuery({
-    queryKey: ["unread-messages"],
-    queryFn: () => unreadFn(),
-    enabled: chatMode === "chat",
-    refetchInterval: 15000,
-  });
-
-  const waitingByFriend =
-    chatMode === "chat"
-      ? ((unreadQ.data ?? {}) as Record<string, number>)
-      : activity.messages.reduce<Record<string, number>>((counts, item) => {
-          counts[item.sender_id] = (counts[item.sender_id] ?? 0) + 1;
-          return counts;
-        }, {});
+  const waitingItems = chatMode === "chat" ? activity.chatMessages : activity.messages;
+  const waitingByFriend = waitingItems.reduce<Record<string, number>>((counts, item) => {
+    counts[item.sender_id] = (counts[item.sender_id] ?? 0) + 1;
+    return counts;
+  }, {});
 
   function openContact(friendId: string, nextTab: "encrypt" | "decrypt" = "encrypt") {
     setSelectedFriendId(friendId);
@@ -157,7 +146,9 @@ function Workspace() {
                   <span className="min-w-0 flex-1 text-left">
                     <span className="block truncate text-[15px] font-semibold">@{friend.other.handle}</span>
                     <span className="mt-0.5 block truncate font-sans text-xs font-normal text-muted-foreground">
-                      {count > 0 ? t("activity_key_waiting", { handle: friend.other.handle }) : chatMode === "chat" ? t("chat_mode_chat") : t("app_encrypt")}
+                      {count > 0
+                        ? t(chatMode === "chat" ? "contact_chat_waiting" : "contact_legacy_waiting", { count })
+                        : chatMode === "chat" ? t("chat_mode_chat") : t("app_encrypt")}
                     </span>
                   </span>
                   <span className="flex shrink-0 items-center gap-2">
@@ -236,6 +227,7 @@ function Workspace() {
             contactId={selectedFriend.other.id}
             contactPublicKey={selectedFriend.other.public_key}
             myPublicKey={myProfileQ.data?.public_key ?? null}
+            onActivityConsumed={activity.refresh}
           />
         ) : (
           <div className="py-10 text-center text-sm text-muted-foreground">{t("chat_empty")}</div>
