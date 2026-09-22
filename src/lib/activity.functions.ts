@@ -6,13 +6,23 @@ export const getActivity = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
-    const [{ data: keys, error: keysError }, { data: requests, error: requestsError }] =
+    const [
+      { data: keys, error: keysError },
+      { data: chatMessages, error: chatError },
+      { data: requests, error: requestsError },
+    ] =
       await Promise.all([
         supabase
           .from("pending_keys")
           .select("id, message_id, sender_id, created_at")
           .eq("recipient_id", userId)
           .is("dismissed_at", null)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("messages")
+          .select("id, sender_id, created_at")
+          .eq("recipient_id", userId)
+          .is("read_at", null)
           .order("created_at", { ascending: false }),
         supabase
           .from("friendships")
@@ -23,11 +33,13 @@ export const getActivity = createServerFn({ method: "GET" })
       ]);
 
     if (keysError) throw new Error(keysError.message);
+    if (chatError) throw new Error(chatError.message);
     if (requestsError) throw new Error(requestsError.message);
 
     const profileIds = Array.from(
       new Set([
         ...(keys ?? []).map((item) => item.sender_id),
+        ...(chatMessages ?? []).map((item) => item.sender_id),
         ...(requests ?? []).map((item) => item.requester_id),
       ]),
     );
@@ -44,6 +56,10 @@ export const getActivity = createServerFn({ method: "GET" })
 
     return {
       messages: (keys ?? []).map((item) => ({
+        ...item,
+        handle: handles.get(item.sender_id) ?? "unknown",
+      })),
+      chatMessages: (chatMessages ?? []).map((item) => ({
         ...item,
         handle: handles.get(item.sender_id) ?? "unknown",
       })),

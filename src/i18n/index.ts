@@ -3,6 +3,7 @@ import { initReactI18next } from "react-i18next";
 import { translations } from "./translations";
 import { activityTranslations } from "./activity-translations";
 import { helpGuideTranslations } from "./help-guide-translations";
+import { notificationTranslations } from "./notification-translations";
 import { SUPPORTED_CODES } from "./languages";
 
 const resources = Object.fromEntries(
@@ -13,6 +14,7 @@ const resources = Object.fromEntries(
         ...dict,
         ...(activityTranslations[code] ?? {}),
         ...(helpGuideTranslations[code] ?? {}),
+        ...(notificationTranslations[code] ?? {}),
       },
     },
   ]),
