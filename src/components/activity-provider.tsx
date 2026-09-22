@@ -124,7 +124,9 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-xs font-semibold text-primary">{title}</p>
-              <p className="mt-0.5 truncate text-sm font-semibold">@{item.handle}</p>
+              {!minimalAlerts && (
+                <p className="mt-0.5 truncate text-sm font-semibold">@{item.handle}</p>
+              )}
               <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{body}</p>
             </div>
             <Button
@@ -191,7 +193,7 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
       }
     }
     seenRef.current = ids;
-  }, [browserAlerts, query.data, t]);
+  }, [browserAlerts, minimalAlerts, query.data, t]);
 
   async function refresh() {
     await queryClient.invalidateQueries({ queryKey: ["activity"] });
