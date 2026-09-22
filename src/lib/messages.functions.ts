@@ -43,6 +43,23 @@ export const listConversation = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+
+    // Auto-delete: drop messages in my conversations older than my setting.
+    const { data: prefs } = await supabase
+      .from("profiles")
+      .select("auto_delete_hours")
+      .eq("id", userId)
+      .maybeSingle();
+    const hours = prefs?.auto_delete_hours ?? 0;
+    if (hours > 0) {
+      const cutoff = new Date(Date.now() - hours * 3600_000).toISOString();
+      await supabase
+        .from("messages")
+        .delete()
+        .lt("created_at", cutoff)
+        .or(`sender_id.eq.${userId},recipient_id.eq.${userId}`);
+    }
+
     const { data: rows, error } = await supabase
       .from("messages")
       .select(
