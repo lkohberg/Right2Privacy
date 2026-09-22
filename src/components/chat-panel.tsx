@@ -166,7 +166,8 @@ export function ChatPanel({
         ))}
         <div ref={bottomRef} />
       </div>
-      <div className="sticky bottom-0 flex shrink-0 items-end gap-2 border-t border-border bg-background/95 pt-3 backdrop-blur">
+      <div className="sticky bottom-0 shrink-0 pb-1 pt-3">
+        <div className="flex items-end gap-2 rounded-3xl border border-border bg-card px-2 py-1.5 shadow-sm focus-within:border-ring">
         <textarea
           value={text}
           onChange={(event) => setText(event.target.value)}
