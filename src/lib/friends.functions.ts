@@ -68,6 +68,21 @@ export const updateLanguage = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const updateChatMode = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { chat_mode: "chat" | "legacy" }) =>
+    z.object({ chat_mode: z.enum(["chat", "legacy"]) }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { error } = await supabase
+      .from("profiles")
+      .update({ chat_mode: data.chat_mode })
+      .eq("id", userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 export const regenerateKeys = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: {
