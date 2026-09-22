@@ -112,9 +112,9 @@ function Workspace() {
   }
 
   return (
-    <main className="h-full px-0 py-0">
-      <div className="grid h-full lg:min-h-[calc(100vh-3rem)] lg:grid-cols-[20rem_minmax(0,1fr)]">
-        <aside className={`${mobileContactOpen ? "hidden" : "block"} min-w-0 lg:block lg:border-r lg:border-border lg:bg-background/30`}>
+    <main className="h-[calc(100dvh-9.75rem)] min-h-0 overflow-hidden px-0 py-0 lg:h-full">
+      <div className="grid h-full min-h-0 lg:h-[calc(100dvh-3rem)] lg:grid-cols-[20rem_minmax(0,1fr)]">
+        <aside className={`${mobileContactOpen ? "hidden" : "block"} min-w-0 overflow-y-auto overscroll-contain lg:block lg:border-r lg:border-border lg:bg-background/30`}>
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 border-b border-border px-4 pb-4 pt-5 lg:px-6 lg:pb-5 lg:pt-7">
             <div className="min-w-0">
               <p className="mb-1 text-xs font-medium uppercase text-primary lg:hidden">Right2Privacy</p>
@@ -163,8 +163,8 @@ function Workspace() {
           </div>
         </aside>
 
-        <section key={selectedFriendId || "none"} className={`${mobileContactOpen ? "block" : "hidden"} min-w-0 animate-chat-fade px-4 pb-6 pt-3 motion-reduce:animate-none lg:flex lg:min-h-0 lg:flex-col lg:px-0 lg:pb-0 lg:pt-0`}>
-      <div className="mb-4 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 border-b border-border pb-3 lg:hidden">
+        <section key={selectedFriendId || "none"} className={`${mobileContactOpen ? "flex" : "hidden"} h-full min-h-0 min-w-0 flex-col overflow-hidden animate-chat-fade px-4 pb-1 pt-3 motion-reduce:animate-none lg:flex lg:px-0 lg:pb-0 lg:pt-0`}>
+      <div className="mb-4 grid shrink-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 border-b border-border pb-3 lg:hidden">
         <Button type="button" variant="ghost" size="icon" onClick={() => setMobileContactOpen(false)} aria-label={t("nav_messages")} className="rounded-full">
           <ArrowLeft className="h-5 w-5" />
         </Button>

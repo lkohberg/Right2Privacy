@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Send } from "lucide-react";
+import { Check, CheckCheck, Send } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -47,6 +47,7 @@ export function ChatPanel({
   const [keyChecked, setKeyChecked] = useState(false);
   const [plain, setPlain] = useState<Record<string, string>>({});
   const bottomRef = useRef<HTMLDivElement>(null);
+  const messageListRef = useRef<HTMLDivElement>(null);
   const markingReadRef = useRef(new Set<string>());
 
   const listFn = useServerFn(listConversation);
@@ -115,7 +116,8 @@ export function ChatPanel({
   }, [rows, plain, markReadFn, onActivityConsumed, refetchConversation]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ block: "end" });
+    const messageList = messageListRef.current;
+    if (messageList) messageList.scrollTop = messageList.scrollHeight;
   }, [rows.length, plain]);
 
   async function onSend() {
@@ -146,8 +148,8 @@ export function ChatPanel({
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto pb-4">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden">
+      <div ref={messageListRef} className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pb-4 pr-1">
         {keyChecked && !privKey && (
           <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm">
             {t("chat_locked")}
@@ -166,12 +168,23 @@ export function ChatPanel({
               }`}
             >
               <p className="whitespace-pre-wrap break-words">{plain[row.id] ?? "…"}</p>
-              <p className="mt-1 text-right text-[10px] opacity-70">
-                {new Date(row.created_at).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </p>
+              <div className="mt-1 flex items-center justify-end gap-1 text-[10px] opacity-70">
+                <span>
+                  {new Date(row.created_at).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+                {row.mine && (
+                  <span
+                    className="inline-flex items-center"
+                    title={t(row.read_at ? "chat_status_read" : "chat_status_sent")}
+                    aria-label={t(row.read_at ? "chat_status_read" : "chat_status_sent")}
+                  >
+                    {row.read_at ? <CheckCheck className="h-3.5 w-3.5" /> : <Check className="h-3.5 w-3.5" />}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         ))}
