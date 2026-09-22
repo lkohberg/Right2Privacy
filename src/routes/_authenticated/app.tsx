@@ -212,6 +212,17 @@ function Workspace() {
         <div className="rounded-md border border-border bg-card p-6 text-sm text-muted-foreground">
           {t("app_no_friends")}
         </div>
+      ) : chatMode === "chat" ? (
+        selectedFriend ? (
+          <ChatPanel
+            key={selectedFriend.other.id}
+            contactId={selectedFriend.other.id}
+            contactPublicKey={selectedFriend.other.public_key}
+            myPublicKey={myProfileQ.data?.public_key ?? null}
+          />
+        ) : (
+          <div className="py-10 text-center text-sm text-muted-foreground">{t("chat_empty")}</div>
+        )
       ) : (
         <div className="grid grid-cols-2 grid-rows-[minmax(0,1fr)_auto] items-start gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_5.25rem] lg:grid-rows-1 lg:gap-6">
           <div className="col-span-2 min-w-0 overflow-hidden lg:col-span-1 lg:col-start-1 lg:row-start-1">
