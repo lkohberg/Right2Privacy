@@ -1,0 +1,28 @@
+import type { Dict } from "./translations";
+
+export const chatStatusTranslations: Record<string, Dict> = {
+  en: { chat_status_sent: "Sent", chat_status_read: "Read" },
+  bg: { chat_status_sent: "Изпратено", chat_status_read: "Прочетено" },
+  hr: { chat_status_sent: "Poslano", chat_status_read: "Pročitano" },
+  cs: { chat_status_sent: "Odesláno", chat_status_read: "Přečteno" },
+  da: { chat_status_sent: "Sendt", chat_status_read: "Læst" },
+  nl: { chat_status_sent: "Verzonden", chat_status_read: "Gelezen" },
+  et: { chat_status_sent: "Saadetud", chat_status_read: "Loetud" },
+  fi: { chat_status_sent: "Lähetetty", chat_status_read: "Luettu" },
+  fr: { chat_status_sent: "Envoyé", chat_status_read: "Lu" },
+  de: { chat_status_sent: "Gesendet", chat_status_read: "Gelesen" },
+  el: { chat_status_sent: "Στάλθηκε", chat_status_read: "Διαβάστηκε" },
+  hu: { chat_status_sent: "Elküldve", chat_status_read: "Elolvasva" },
+  ga: { chat_status_sent: "Seolta", chat_status_read: "Léite" },
+  it: { chat_status_sent: "Inviato", chat_status_read: "Letto" },
+  lv: { chat_status_sent: "Nosūtīts", chat_status_read: "Izlasīts" },
+  lt: { chat_status_sent: "Išsiųsta", chat_status_read: "Perskaityta" },
+  mt: { chat_status_sent: "Mibgħut", chat_status_read: "Inqara" },
+  pl: { chat_status_sent: "Wysłano", chat_status_read: "Przeczytano" },
+  pt: { chat_status_sent: "Enviado", chat_status_read: "Lido" },
+  ro: { chat_status_sent: "Trimis", chat_status_read: "Citit" },
+  sk: { chat_status_sent: "Odoslané", chat_status_read: "Prečítané" },
+  sl: { chat_status_sent: "Poslano", chat_status_read: "Prebrano" },
+  es: { chat_status_sent: "Enviado", chat_status_read: "Leído" },
+  sv: { chat_status_sent: "Skickat", chat_status_read: "Läst" },
+};
