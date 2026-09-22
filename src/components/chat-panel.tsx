@@ -16,7 +16,7 @@ import {
 } from "@/lib/crypto";
 import {
   listConversation,
-  markConversationRead,
+  markMessagesRead,
   sendMessage,
 } from "@/lib/messages.functions";
 
@@ -33,10 +33,12 @@ export function ChatPanel({
   contactId,
   contactPublicKey,
   myPublicKey,
+  onActivityConsumed,
 }: {
   contactId: string;
   contactPublicKey: string;
   myPublicKey: string | null;
+  onActivityConsumed: () => Promise<void>;
 }) {
   const { t } = useTranslation();
   const [text, setText] = useState("");
@@ -45,10 +47,11 @@ export function ChatPanel({
   const [keyChecked, setKeyChecked] = useState(false);
   const [plain, setPlain] = useState<Record<string, string>>({});
   const bottomRef = useRef<HTMLDivElement>(null);
+  const markingReadRef = useRef(new Set<string>());
 
   const listFn = useServerFn(listConversation);
   const sendFn = useServerFn(sendMessage);
-  const markReadFn = useServerFn(markConversationRead);
+  const markReadFn = useServerFn(markMessagesRead);
 
   useEffect(() => {
     let active = true;
@@ -72,6 +75,7 @@ export function ChatPanel({
   });
 
   const rows = useMemo(() => (conversationQ.data ?? []) as Row[], [conversationQ.data]);
+  const refetchConversation = conversationQ.refetch;
 
   useEffect(() => {
     if (!privKey || rows.length === 0) return;
@@ -98,10 +102,17 @@ export function ChatPanel({
   }, [rows, privKey, plain]);
 
   useEffect(() => {
-    if (rows.some((row) => !row.mine && !row.read_at)) {
-      void markReadFn({ data: { contact_id: contactId } });
-    }
-  }, [rows, contactId, markReadFn]);
+    const readableUnreadIds = rows
+      .filter((row) => !row.mine && !row.read_at && plain[row.id] && plain[row.id] !== "🔒" && !markingReadRef.current.has(row.id))
+      .map((row) => row.id);
+    if (readableUnreadIds.length === 0) return;
+    readableUnreadIds.forEach((id) => markingReadRef.current.add(id));
+    void markReadFn({ data: { message_ids: readableUnreadIds } })
+      .then(async () => {
+        await Promise.all([refetchConversation(), onActivityConsumed()]);
+      })
+      .catch(() => readableUnreadIds.forEach((id) => markingReadRef.current.delete(id)));
+  }, [rows, plain, markReadFn, onActivityConsumed, refetchConversation]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ block: "end" });

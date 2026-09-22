@@ -72,9 +72,9 @@ function AuthedLayout() {
 
 function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
   const { t } = useTranslation();
-  const { messages, friendRequests, browserAlertsEnabled, enableBrowserAlerts } = useActivity();
+  const { messages, chatMessages, friendRequests, browserAlertsEnabled, enableBrowserAlerts } = useActivity();
   const { mode: chatMode, setMode: setChatMode } = useChatMode();
-  const activityCount = messages.length;
+  const activityCount = messages.length + chatMessages.length;
   const requestCount = friendRequests.length;
 
   return (
