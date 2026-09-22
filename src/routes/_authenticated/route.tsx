@@ -88,6 +88,17 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
             <NavLink to="/friends" label={t("nav_friends")} badge={requestCount} icon={<Users className="h-4 w-4" />} />
             <NavLink to="/settings" label={t("nav_settings")} icon={<Settings className="h-4 w-4" />} />
             <div className="mt-auto flex flex-col gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => void setChatMode(chatMode === "chat" ? "legacy" : "chat")}
+              title={`${t("chat_mode_title")}: ${chatMode === "chat" ? t("chat_mode_chat") : t("chat_mode_legacy")}`}
+              aria-label={`${t("chat_mode_title")}: ${chatMode === "chat" ? t("chat_mode_chat") : t("chat_mode_legacy")}`}
+              className={`h-10 w-10 rounded-lg ${chatMode === "chat" ? "text-primary" : "text-muted-foreground"}`}
+            >
+              {chatMode === "chat" ? <MessagesSquare className="h-4 w-4" /> : <History className="h-4 w-4" />}
+            </Button>
             <Link
               to="/watchlist"
               title={t("nav_watchlist")}
