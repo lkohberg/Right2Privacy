@@ -54,7 +54,7 @@ export function HelpDialog({ triggerClassName }: { triggerClassName?: string }) 
           <CircleHelp className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[88vh] grid-rows-[auto_minmax(0,1fr)_auto] gap-0 overflow-hidden p-0 sm:max-w-2xl">
+      <DialogContent className="max-h-[88vh] grid-rows-[auto_minmax(0,1fr)_auto] gap-0 overflow-hidden bg-card p-0 text-left sm:max-w-2xl">
         <DialogHeader className="border-b border-border px-6 pb-5 pt-6 pr-12">
           <DialogTitle>{t("help_title")}</DialogTitle>
           <DialogDescription className="leading-relaxed">{t("help_intro")}</DialogDescription>
