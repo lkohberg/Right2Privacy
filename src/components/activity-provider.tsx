@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { History, MessageSquare, UserPlus, X } from "lucide-react";
 import { getActivity } from "@/lib/activity.functions";
+import { useChatMode } from "@/lib/use-chat-mode";
 import { Button } from "@/components/ui/button";
 
 export type ActivityMessage = {
@@ -54,6 +55,7 @@ const ActivityContext = createContext<ActivityValue | null>(null);
 export function ActivityProvider({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
   const router = useRouter();
+  const { setMode } = useChatMode();
 
   const getActivityFn = useServerFn(getActivity);
   const queryClient = useQueryClient();
@@ -100,13 +102,15 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
       const body = t(isChat ? "notification_chat_body" : "notification_legacy_body", {
         handle: item.handle,
       });
-      const open = () =>
-        router.navigate({
+      const open = async () => {
+        await setMode(isChat ? "chat" : "legacy");
+        await router.navigate({
           to: "/app",
           search: isChat
             ? { contact: item.sender_id }
             : { contact: item.sender_id, mode: "decrypt" as const },
         });
+      };
       toast.custom(
         (toastId) => (
           <div className="flex w-[min(24rem,calc(100vw-2rem))] items-center gap-3 rounded-xl border border-border bg-background/95 p-3 text-foreground shadow-2xl backdrop-blur-xl">
@@ -144,7 +148,7 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
         { duration: 6000 },
       );
       if (browserAlerts && Notification.permission === "granted") {
-        const notification = new Notification("Right2Privacy", {
+        const notification = new Notification(title, {
           body,
           tag: `${kind}:${item.id}`,
         });

@@ -47,6 +47,7 @@ export function ChatPanel({
   const [keyChecked, setKeyChecked] = useState(false);
   const [plain, setPlain] = useState<Record<string, string>>({});
   const bottomRef = useRef<HTMLDivElement>(null);
+  const markingReadRef = useRef(new Set<string>());
 
   const listFn = useServerFn(listConversation);
   const sendFn = useServerFn(sendMessage);
@@ -101,11 +102,16 @@ export function ChatPanel({
 
   useEffect(() => {
     const readableUnreadIds = rows
-      .filter((row) => !row.mine && !row.read_at && plain[row.id] && plain[row.id] !== "🔒")
+      .filter((row) => !row.mine && !row.read_at && plain[row.id] && plain[row.id] !== "🔒" && !markingReadRef.current.has(row.id))
       .map((row) => row.id);
     if (readableUnreadIds.length === 0) return;
-    void markReadFn({ data: { message_ids: readableUnreadIds } }).then(onActivityConsumed);
-  }, [rows, plain, markReadFn, onActivityConsumed]);
+    readableUnreadIds.forEach((id) => markingReadRef.current.add(id));
+    void markReadFn({ data: { message_ids: readableUnreadIds } })
+      .then(async () => {
+        await Promise.all([conversationQ.refetch(), onActivityConsumed()]);
+      })
+      .catch(() => readableUnreadIds.forEach((id) => markingReadRef.current.delete(id)));
+  }, [rows, plain, markReadFn, onActivityConsumed, conversationQ]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ block: "end" });
