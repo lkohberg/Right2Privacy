@@ -166,7 +166,8 @@ export function ChatPanel({
         ))}
         <div ref={bottomRef} />
       </div>
-      <div className="sticky bottom-0 flex shrink-0 items-end gap-2 border-t border-border bg-background/95 pt-3 backdrop-blur">
+      <div className="sticky bottom-0 shrink-0 pb-1 pt-3">
+        <div className="flex items-end gap-2 rounded-3xl border border-border bg-card px-2 py-1.5 shadow-sm focus-within:border-ring">
         <textarea
           value={text}
           onChange={(event) => setText(event.target.value)}
@@ -178,17 +179,18 @@ export function ChatPanel({
           }}
           rows={1}
           placeholder={t("chat_ph")}
-          className="r2p-input max-h-32 min-h-11 flex-1 resize-none rounded-2xl"
+          className="max-h-32 min-h-10 flex-1 resize-none border-0 bg-transparent px-2 py-2 text-base text-foreground outline-none placeholder:text-muted-foreground lg:text-sm"
         />
         <Button
           type="button"
           onClick={() => void onSend()}
           disabled={sending || !text.trim()}
           aria-label={t("chat_send")}
-          className="h-11 w-11 shrink-0 rounded-full p-0 shadow-lg shadow-primary/20"
+          className="h-10 w-10 shrink-0 rounded-full p-0 shadow-lg shadow-primary/20"
         >
           <Send className="h-4 w-4" />
         </Button>
+        </div>
       </div>
     </div>
   );
