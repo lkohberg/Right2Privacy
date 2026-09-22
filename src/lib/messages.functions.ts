@@ -97,3 +97,53 @@ export const markMessagesRead = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+export const deleteMessages = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { message_ids: string[] }) =>
+    z.object({ message_ids: z.array(z.string().uuid()).min(1).max(300) }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { error } = await supabase
+      .from("messages")
+      .delete()
+      .in("id", data.message_ids)
+      .or(`sender_id.eq.${userId},recipient_id.eq.${userId}`);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const deleteConversation = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { contact_id: string }) =>
+    z.object({ contact_id: z.string().uuid() }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { error } = await supabase
+      .from("messages")
+      .delete()
+      .or(
+        `and(sender_id.eq.${userId},recipient_id.eq.${data.contact_id}),and(sender_id.eq.${data.contact_id},recipient_id.eq.${userId})`,
+      );
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const deleteAllMessages = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    const { error } = await supabase
+      .from("messages")
+      .delete()
+      .or(`sender_id.eq.${userId},recipient_id.eq.${userId}`);
+    if (error) throw new Error(error.message);
+    const { error: keyError } = await supabase
+      .from("message_keys")
+      .delete()
+      .eq("owner_id", userId);
+    if (keyError) throw new Error(keyError.message);
+    return { ok: true };
+  });
