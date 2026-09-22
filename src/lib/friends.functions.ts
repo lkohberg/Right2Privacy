@@ -104,11 +104,14 @@ export const updatePreferences = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const patch: Record<string, unknown> = {};
-    if (data.read_receipts !== undefined) patch["read_receipts"] = data.read_receipts;
-    if (data.theme !== undefined) patch["theme"] = data.theme;
-    if (data.notify_detail !== undefined) patch["notify_detail"] = data.notify_detail;
-    if (data.auto_delete_hours !== undefined) patch["auto_delete_hours"] = data.auto_delete_hours;
+    const patch = {
+      ...(data.read_receipts !== undefined ? { read_receipts: data.read_receipts } : {}),
+      ...(data.theme !== undefined ? { theme: data.theme } : {}),
+      ...(data.notify_detail !== undefined ? { notify_detail: data.notify_detail } : {}),
+      ...(data.auto_delete_hours !== undefined
+        ? { auto_delete_hours: data.auto_delete_hours }
+        : {}),
+    };
     if (Object.keys(patch).length === 0) return { ok: true };
     const { error } = await supabase.from("profiles").update(patch).eq("id", userId);
     if (error) throw new Error(error.message);
