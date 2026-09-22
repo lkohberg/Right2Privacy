@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { History, MessageSquare, UserPlus, X } from "lucide-react";
 import { getActivity } from "@/lib/activity.functions";
 import { useChatMode } from "@/lib/use-chat-mode";
+import { usePreferences } from "@/lib/use-preferences";
 import { Button } from "@/components/ui/button";
 
 export type ActivityMessage = {
@@ -56,6 +57,8 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
   const router = useRouter();
   const { setMode } = useChatMode();
+  const { preferences } = usePreferences();
+  const minimalAlerts = preferences.notify_detail === "minimal";
 
   const getActivityFn = useServerFn(getActivity);
   const queryClient = useQueryClient();
@@ -99,9 +102,11 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
     ) => {
       const isChat = kind === "chat";
       const title = t(isChat ? "notification_chat_title" : "notification_legacy_title");
-      const body = t(isChat ? "notification_chat_body" : "notification_legacy_body", {
-        handle: item.handle,
-      });
+      const body = minimalAlerts
+        ? t("notification_generic_body")
+        : t(isChat ? "notification_chat_body" : "notification_legacy_body", {
+            handle: item.handle,
+          });
       const open = async () => {
         await setMode(isChat ? "chat" : "legacy");
         await router.navigate({
@@ -119,7 +124,9 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-xs font-semibold text-primary">{title}</p>
-              <p className="mt-0.5 truncate text-sm font-semibold">@{item.handle}</p>
+              {!minimalAlerts && (
+                <p className="mt-0.5 truncate text-sm font-semibold">@{item.handle}</p>
+              )}
               <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{body}</p>
             </div>
             <Button
@@ -186,7 +193,7 @@ export function ActivityProvider({ children }: { children: React.ReactNode }) {
       }
     }
     seenRef.current = ids;
-  }, [browserAlerts, query.data, t]);
+  }, [browserAlerts, minimalAlerts, query.data, t]);
 
   async function refresh() {
     await queryClient.invalidateQueries({ queryKey: ["activity"] });

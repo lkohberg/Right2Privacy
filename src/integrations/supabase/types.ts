@@ -133,37 +133,49 @@ export type Database = {
       }
       profiles: {
         Row: {
+          auto_delete_hours: number
           chat_mode: string
           created_at: string
           encrypted_private_key: string
           handle: string
           id: string
           language: string
+          notify_detail: string
           pk_iv: string
           pk_salt: string
           public_key: string
+          read_receipts: boolean
+          theme: string
         }
         Insert: {
+          auto_delete_hours?: number
           chat_mode?: string
           created_at?: string
           encrypted_private_key: string
           handle: string
           id: string
           language?: string
+          notify_detail?: string
           pk_iv: string
           pk_salt: string
           public_key: string
+          read_receipts?: boolean
+          theme?: string
         }
         Update: {
+          auto_delete_hours?: number
           chat_mode?: string
           created_at?: string
           encrypted_private_key?: string
           handle?: string
           id?: string
           language?: string
+          notify_detail?: string
           pk_iv?: string
           pk_salt?: string
           public_key?: string
+          read_receipts?: boolean
+          theme?: string
         }
         Relationships: []
       }
