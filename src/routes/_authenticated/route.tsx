@@ -12,6 +12,7 @@ import { getMyProfile } from "@/lib/friends.functions";
 import { SUPPORTED_CODES } from "@/i18n/languages";
 import { ActivityProvider, useActivity } from "@/components/activity-provider";
 import { Button } from "@/components/ui/button";
+import { HelpDialog } from "@/components/help-dialog";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -90,6 +91,7 @@ function AuthenticatedShell({ onSignOut }: { onSignOut: () => Promise<void> }) {
             <NavLink to="/friends" label={t("nav_friends")} badge={requestCount} icon={<Users className="h-4 w-4" />} />
             <NavLink to="/settings" label={t("nav_settings")} icon={<Settings className="h-4 w-4" />} />
             <div className="mt-auto flex flex-col gap-2">
+            <HelpDialog />
             <Button
               type="button"
               variant="ghost"
