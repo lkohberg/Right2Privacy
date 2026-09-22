@@ -173,7 +173,13 @@ function SettingsPage() {
           </Link>
         </Card>
 
-        <Card title={t("settings_encryption")}>
+        <Card title={t("help_title")}>
+          <div className="flex items-center justify-between gap-3 px-4 py-3">
+            <span className="text-sm text-muted-foreground">{t("help_intro")}</span>
+            <HelpDialog triggerClassName="h-9 w-9 shrink-0 rounded-lg text-muted-foreground" />
+          </div>
+        </Card>
+
           <Row label={t("settings_priv_local")}>
             {hasLocalKey === null
               ? "…"
